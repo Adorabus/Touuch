@@ -1,5 +1,3 @@
-const config = require('../config')
-
 module.exports = (sequelize, DataTypes) => {
   const LoginAttempt = sequelize.define('LoginAttempt', {
     username: DataTypes.STRING,
