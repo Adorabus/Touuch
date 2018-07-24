@@ -4,7 +4,7 @@
   "description": "Touuch backend.",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js"
   },
   "author": "Adorabus",
   "license": "ISC",
@@ -15,6 +15,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
     "geoip-lite": "^1.3.1",
     "joi": "^13.4.0",
