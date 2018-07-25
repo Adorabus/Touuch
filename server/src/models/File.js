@@ -41,6 +41,10 @@ module.exports = (sequelize, DataTypes) => {
     paranoid: true
   })
 
+  File.associate = function (models) {
+    File.hasMany(models.Url, {foreignKey: 'file'})
+  }
+
   File.prototype.update = function (path) {
     return new Promise(async (resolve, reject) => {
       try {
