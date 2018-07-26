@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const requestIP = require('request-ip')
 const {sequelize, File, User} = require('./models')
 const config = require('./config')
-const urlCont = require('./controllers/Urls')
+const uploadsController = require('./controllers/Uploads')
 
 const app = express()
 
@@ -16,29 +16,16 @@ require('./passport')
 require('./routes')(app)
 
 sequelize.sync({force: true}) // TODO: Remove force
-  .then(async () => { // TODO: Remove async
+  .then(() => { // TODO: Remove async
     app.listen(config.port)
     console.log('Ready.')
 
     // TEST
-    console.log('Adding file...')
     try {
-      const user = await User.create({
-        username: 'Baka'
+      User.create({
+        username: 'Baka',
+        password: 'beeba'
       })
-
-      const file = await File.create({hash: 'temp'})
-      await file.update('.gitignore')
-
-      const url = await file.createUrl({
-        filename: 'becky.jpg',
-        url: 'aBs26n'
-      })
-      url.setOwner(user)
-
-      console.log('Done.')
-
-      urlCont.generateNextUrl()
     } catch (error) {
       console.log(error)
     }
