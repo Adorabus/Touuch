@@ -1,7 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
   const Url = sequelize.define('Url', {
-    filename: DataTypes.STRING,
-    url: DataTypes.STRING
+    filename: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: false
+    },
+    url: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true
+    }
   }, {
     timestamps: true,
     paranoid: true

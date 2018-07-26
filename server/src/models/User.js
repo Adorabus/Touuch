@@ -4,7 +4,7 @@ const omit = require('lodash/omit')
 const uuidv4 = require('uuid/v4')
 const speakeasy = require('speakeasy')
 
-function beforeSave(user, options) {
+function beforeSave (user, options) {
   if (!user.changed('password')) {
     return
   }

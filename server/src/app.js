@@ -2,7 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const requestIP = require('request-ip')
-const {sequelize, File, User, Url} = require('./models')
+const {sequelize, File, User} = require('./models')
 const config = require('./config')
 
 const app = express()
