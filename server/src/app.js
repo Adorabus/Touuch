@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 const requestIP = require('request-ip')
 const {sequelize, File, User} = require('./models')
 const config = require('./config')
+const urlCont = require('./controllers/Urls')
 
 const app = express()
 
@@ -26,16 +27,18 @@ sequelize.sync({force: true}) // TODO: Remove force
         username: 'Baka'
       })
 
-      const file = await File.create()
+      const file = await File.create({hash: 'temp'})
       await file.update('.gitignore')
 
-      const url = file.createUrl({
+      const url = await file.createUrl({
         filename: 'becky.jpg',
-        url: 'aBs26n',
-        owner: user.id
+        url: 'aBs26n'
       })
+      url.setOwner(user)
 
       console.log('Done.')
+
+      urlCont.generateNextUrl()
     } catch (error) {
       console.log(error)
     }

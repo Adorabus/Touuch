@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   Url.associate = function (models) {
-    Url.belongsTo(models.User, {foreignKey: 'owner'})
-    Url.belongsTo(models.File, {foreignKey: 'file'})
+    Url.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'})
+    Url.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'})
   }
 
   return Url

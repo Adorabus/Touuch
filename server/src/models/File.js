@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   File.associate = function (models) {
-    File.hasMany(models.Url, {foreignKey: 'file'})
+    File.hasMany(models.Url, {foreignKey: 'fileId'})
   }
 
   File.prototype.update = function (path) {

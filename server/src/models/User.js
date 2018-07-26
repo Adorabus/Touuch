@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
   })
 
   User.associate = function (models) {
-    User.hasMany(models.Url, {foreignKey: 'owner'})
+    User.hasMany(models.Url, {foreignKey: 'ownerId'})
   }
 
   User.prototype.comparePassword = function (password) {

@@ -1,13 +1,25 @@
 const {File, Url} = require('../models')
 
 function generateNextUrl () {
-  return 'baka123'
+  return new Promise(async (resolve, reject) => {
+    const lastUrl = await Url.findOne({
+      where: {
+        deletedAt: null
+      },
+      order: [
+        ['createdAt', 'DESC']
+      ],
+      include: ['file']
+    })
+
+    resolve('baka123')
+  })
 }
 
 function createUrl (file, user, filename) {
   return new Promise(async (resolve, reject) => {
     try {
-      const urlString = generateNextUrl()
+      const urlString = await generateNextUrl()
       const url = await file.createUrl({
         url: urlString,
         owner: user.id,
@@ -22,5 +34,5 @@ function createUrl (file, user, filename) {
 }
 
 module.exports = {
-
+  generateNextUrl
 }
