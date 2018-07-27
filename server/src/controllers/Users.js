@@ -65,7 +65,7 @@ module.exports = {
       const disabled = req.query.disabled === 'true'
       const order = (req.query.descending === 'true') ? 'DESC' : 'ASC'
       const orderBy = req.query.orderBy || 'id'
-      let offset = req.query.offset || 0
+      let offset = req.query.offset || 1
       offset--
       offset *= limit
 

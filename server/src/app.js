@@ -2,30 +2,35 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const requestIP = require('request-ip')
-const {sequelize, File, User} = require('./models')
+const {sequelize, User} = require('./models')
 const config = require('./config')
-const uploadsController = require('./controllers/Uploads')
+const cors = require('cors')
+const morgan = require('morgan')
 
 const app = express()
 
-app.use(bodyParser.json())
-app.use(requestIP.mw)
+app.use(cors())
+app.use(morgan('combined'))
 app.use(express.static('public'))
+app.use(bodyParser.json())
+app.use(requestIP.mw())
 
 require('./passport')
 require('./routes')(app)
 
 sequelize.sync({force: true}) // TODO: Remove force
-  .then(() => { // TODO: Remove async
-    app.listen(config.port)
-    console.log('Ready.')
-
+  // TODO: Remove async
+  .then(async () => {
     // TEST
     try {
-      User.create({
+      await User.create({
         username: 'Baka',
-        password: 'beeba'
+        password: 'bakasaur',
+        admin: true
       })
+
+      await app.listen(config.port)
+      console.log(`Ready on port ${config.port}.`)
     } catch (error) {
       console.log(error)
     }

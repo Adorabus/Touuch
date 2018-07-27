@@ -11,7 +11,7 @@ const schemas = {
   username: Joi.string().regex(/^[A-Za-z0-9]{3,10}$/),
   password: Joi.string().regex(/^[\x20-\x7E]{8,16}$/),
   twoFactorToken: Joi.string().allow(''),
-  filename: Joi().string().regex(/^[\w,\s-.]{1,255}$/)
+  filename: Joi.string().regex(/^[\w,\s-.]{1,255}$/)
 }
 
 function verifyInput (req, res, next, schema, descriptive = false, allowUnknown = false) {

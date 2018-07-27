@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   User.prototype.comparePassword = function (password) {
-    return bcrypt.compareAsync(password, this.password)
+    return bcrypt.compare(password, this.password)
   }
 
   User.prototype.verify2FA = function (token) {
@@ -77,8 +77,8 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   User.prototype.canManage = function (targetUser) {
-    if (targetUser.isRoot()) return false
     if (this.isRoot()) return true
+    if (targetUser.isRoot()) return false
     return this.admin && !targetUser.admin
   }
 
