@@ -43,8 +43,7 @@ function generateNextUrl () {
       },
       order: [
         ['createdAt', 'DESC']
-      ],
-      include: ['file']
+      ]
     })
 
     resolve('baka123')
