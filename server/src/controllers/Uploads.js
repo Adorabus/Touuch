@@ -1,4 +1,5 @@
 const fs = require('mz/fs')
+const path = require('path')
 const blake2 = require('blake2')
 const {File, Url} = require('../models')
 
@@ -67,17 +68,19 @@ function createUrl (file, user, filename) {
   })
 }
 
-function createFile (path) {
+function createFile (file) {
   return new Promise(async (resolve, reject) => {
     try {
-      const hash = await hashFile(path)
-      const size = await measureFile(path)
-      const file = await File.create({
-        hash,
-        size
+      const fileModel = await File.create({
+        hash: file.hash,
+        size: file.size
       })
 
-      resolve(file)
+      const newPath = path.join(file.destination, file.hash)
+      await fs.rename(file.path, newPath)
+      file.path = newPath
+
+      resolve(fileModel)
     } catch (error) {
       reject(error)
     }
@@ -87,24 +90,25 @@ function createFile (path) {
 module.exports = {
   async uploadFile (req, res) {
     try {
-      const filePath = '.gitignore' // TEMP
-      const hash = await hashFile(filePath)
-      let file = await File.findOne({
+      // store the hash in the file req.file object
+      req.file.hash = await hashFile(req.file.path)
+      let fileModel = await File.findOne({
         where: {
-          hash
+          hash: req.file.hash
         }
       })
 
-      if (!file) {
+      if (!fileModel) {
         console.log('Hash not found, creating file...')
-        file = await createFile(filePath)
+        fileModel = await createFile(req.file)
       }
 
-      const url = await createUrl(file, req.user, req.body.filename)
+      const url = await createUrl(fileModel, req.user, req.file.originalname)
       res.send({
         url: url.url
       })
     } catch (error) {
+      console.error(error)
       res.status(500).send({
         error: 'Upload failed.'
       })
