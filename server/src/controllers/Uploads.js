@@ -1,11 +1,10 @@
 const fs = require('mz/fs')
 const path = require('path')
 const blake2 = require('blake2')
-const {File, Url} = require('../models')
 const config = require('../config')
+const {File, Url} = require('../models')
 const {randomInt} = require('../util')
-
-const urlChars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789'
+const {urlChars, urlKeyLength} = config.touuch
 
 function hashFile (path) {
   return new Promise((resolve, reject) => {
@@ -61,7 +60,7 @@ function incrementUrl (url) {
 function generateNextUrl () {
   return new Promise(async (resolve, reject) => {
     let urlKey = ''
-    for (let i = 0; i < config.touuch.urlKeyLength; i++) {
+    for (let i = 0; i < urlKeyLength; i++) {
       urlKey += urlChars[randomInt(0, urlChars.length - 1)]
     }
 
@@ -78,7 +77,7 @@ function generateNextUrl () {
       return resolve(urlChars[0] + urlKey)
     }
 
-    const nextUrl = incrementUrl(lastUrlModel.url.slice(0, config.touuch.urlKeyLength * -1))
+    const nextUrl = incrementUrl(lastUrlModel.url.slice(0, urlKeyLength * -1))
     resolve(nextUrl + urlKey)
   })
 }

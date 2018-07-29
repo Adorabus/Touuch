@@ -19,6 +19,7 @@ module.exports = {
     jwtSecret: process.env.JWT_SECRET
   },
   touuch: {
+    urlChars: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789',
     urlKeyLength: 4
   }
 }
