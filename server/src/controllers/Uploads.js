@@ -26,17 +26,6 @@ function hashFile (path) {
   })
 }
 
-function measureFile (path) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const stats = await fs.stat(path)
-      resolve(stats.size)
-    } catch (error) {
-      reject(new Error(`Could not find file "${path}".`))
-    }
-  })
-}
-
 function incrementUrl (url) {
   const urlCharCount = urlChars.length
   const lastChar = url.slice(-1)
