@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: false
     },
     url: {
-      type: DataTypes.STRING,
+      type: 'VARCHAR(255) CHARSET utf8_bin',
       allowNull: false,
       unique: true
     }

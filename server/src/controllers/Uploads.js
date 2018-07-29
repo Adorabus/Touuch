@@ -2,6 +2,10 @@ const fs = require('mz/fs')
 const path = require('path')
 const blake2 = require('blake2')
 const {File, Url} = require('../models')
+const config = require('../config')
+const {randomInt} = require('../util')
+
+const urlChars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789'
 
 function hashFile (path) {
   return new Promise((resolve, reject) => {
@@ -34,9 +38,14 @@ function measureFile (path) {
   })
 }
 
-// TODO: use a queue for race conditions
+// TODO: use a queue for race conditions, because url are sequential
 function generateNextUrl () {
   return new Promise(async (resolve, reject) => {
+    let urlKey = ''
+    for (let i = 0; i < config.touuch.urlKeyLength; i++) {
+      urlKey += urlChars[randomInt(0, urlChars.length - 1)] // TODO: Pick up here
+    }
+
     const lastUrl = await Url.findOne({
       where: {
         deletedAt: null
@@ -46,15 +55,15 @@ function generateNextUrl () {
       ]
     })
 
-    resolve('baka123')
+    resolve('baka123' + Math.random())
   })
 }
 
-function createUrl (file, user, filename) {
+function createUrl (fileModel, user, filename) {
   return new Promise(async (resolve, reject) => {
     try {
       const urlString = await generateNextUrl()
-      const url = await file.createUrl({
+      const url = await fileModel.createUrl({
         url: urlString,
         filename,
         ownerId: user.id
@@ -89,6 +98,7 @@ function createFile (file) {
 module.exports = {
   async uploadFile (req, res) {
     try {
+      // TODO: Check if file exists
       // store the hash in the file req.file object
       req.file.hash = await hashFile(req.file.path)
       let fileModel = await File.findOne({
@@ -98,18 +108,41 @@ module.exports = {
       })
 
       if (!fileModel) {
-        console.log('Hash not found, creating file...')
         fileModel = await createFile(req.file)
       }
 
-      const url = await createUrl(fileModel, req.user, req.file.originalname)
+      const urlModel = await createUrl(fileModel, req.user, req.file.originalname)
       res.send({
-        url: url.url
+        url: urlModel.url
       })
+    } catch (error) {
+      res.status(500).send({
+        error: 'Upload failed.'
+      })
+    }
+  },
+  async uploadHash (req, res) {
+    try {
+      const fileModel = await File.findOne({
+        where: {
+          hash: req.body.hash
+        }
+      })
+
+      if (fileModel) {
+        const urlModel = await createUrl(fileModel, req.user, req.body.filename)
+        res.send({
+          url: urlModel.url
+        })
+      } else {
+        res.status(409).send({
+          message: 'Hash not found.'
+        })
+      }
     } catch (error) {
       console.error(error)
       res.status(500).send({
-        error: 'Upload failed.'
+        error: 'Hash look-up failed.'
       })
     }
   }
