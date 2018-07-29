@@ -20,6 +20,7 @@ module.exports = {
   },
   touuch: {
     urlChars: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789',
-    urlKeyLength: 4
+    urlKeyLength: 4,
+    filesDirectory: path.join(path.resolve(__dirname), 'uploads')
   }
 }

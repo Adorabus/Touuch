@@ -1,3 +1,5 @@
+const mime = require('mime-types')
+
 module.exports = (sequelize, DataTypes) => {
   const Url = sequelize.define('Url', {
     filename: {
@@ -18,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
   Url.associate = function (models) {
     Url.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'})
     Url.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'})
+  }
+
+  Url.prototype.getMimeType = function () {
+    return mime.lookup(this.filename) || 'application/octet-stream'
   }
 
   return Url

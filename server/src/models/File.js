@@ -1,3 +1,6 @@
+const path = require('path')
+const config = require('../config')
+
 module.exports = (sequelize, DataTypes) => {
   const File = sequelize.define('File', {
     hash: {
@@ -13,6 +16,10 @@ module.exports = (sequelize, DataTypes) => {
 
   File.associate = function (models) {
     File.hasMany(models.Url, {foreignKey: 'fileId'})
+  }
+
+  File.prototype.getPath = function () {
+    return path.join(config.touuch.filesDirectory, this.hash)
   }
 
   return File

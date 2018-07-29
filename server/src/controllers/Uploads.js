@@ -1,5 +1,4 @@
 const fs = require('mz/fs')
-const path = require('path')
 const blake2 = require('blake2')
 const config = require('../config')
 const {File, Url} = require('../models')
@@ -47,7 +46,7 @@ function incrementUrl (url) {
 
 // TODO: use a queue for race conditions, because url are sequential
 function generateNextUrl () {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     let urlKey = ''
     for (let i = 0; i < urlKeyLength; i++) {
       urlKey += urlChars[randomInt(0, urlChars.length - 1)]
@@ -96,7 +95,7 @@ function createFile (file) {
         size: file.size
       })
 
-      const newPath = path.join(file.destination, file.hash)
+      const newPath = fileModel.getPath()
       await fs.rename(file.path, newPath)
       file.path = newPath
 
@@ -157,6 +156,27 @@ module.exports = {
       console.error(error)
       res.status(500).send({
         error: 'Hash look-up failed.'
+      })
+    }
+  },
+  async view (req, res) {
+    try {
+      const urlModel = await Url.findOne({
+        where: {
+          url: req.params.url
+        },
+        include: ['file']
+      })
+
+      res.sendFile(urlModel.file.getPath(), {
+        headers: {
+          'Content-Type': urlModel.getMimeType(),
+          'Content-Disposition': `inline; filename=${urlModel.filename}`
+        }
+      })
+    } catch (error) {
+      res.status(404).send({
+        error: 'Requested file does not exist.'
       })
     }
   }
