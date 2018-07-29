@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
   randomInt (min, max) {
     min = Math.ceil(min)
     max = Math.floor(max)

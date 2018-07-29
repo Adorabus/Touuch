@@ -38,15 +38,34 @@ function measureFile (path) {
   })
 }
 
+function incrementUrl (url) {
+  const urlCharCount = urlChars.length
+  const lastChar = url.slice(-1)
+
+  let digitValue = 0
+  for (let i = 0; i < urlCharCount; i++) {
+    if (urlChars[i] === lastChar) {
+      digitValue = i + 1
+      break
+    }
+  }
+
+  if (digitValue >= urlCharCount) {
+    return incrementUrl(url.slice(0, -1)) + urlChars[0]
+  } else {
+    return url.slice(0, -1) + urlChars[digitValue]
+  }
+}
+
 // TODO: use a queue for race conditions, because url are sequential
 function generateNextUrl () {
   return new Promise(async (resolve, reject) => {
     let urlKey = ''
     for (let i = 0; i < config.touuch.urlKeyLength; i++) {
-      urlKey += urlChars[randomInt(0, urlChars.length - 1)] // TODO: Pick up here
+      urlKey += urlChars[randomInt(0, urlChars.length - 1)]
     }
 
-    const lastUrl = await Url.findOne({
+    const lastUrlModel = await Url.findOne({
       where: {
         deletedAt: null
       },
@@ -55,7 +74,12 @@ function generateNextUrl () {
       ]
     })
 
-    resolve('baka123' + Math.random())
+    if (!lastUrlModel) {
+      return resolve(urlChars[0] + urlKey)
+    }
+
+    const nextUrl = incrementUrl(lastUrlModel.url.slice(0, config.touuch.urlKeyLength * -1))
+    resolve(nextUrl + urlKey)
   })
 }
 
@@ -107,7 +131,9 @@ module.exports = {
         }
       })
 
-      if (!fileModel) {
+      if (fileModel) {
+        await fs.unlink(req.file.path)
+      } else {
         fileModel = await createFile(req.file)
       }
 
