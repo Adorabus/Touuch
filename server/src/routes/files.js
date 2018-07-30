@@ -22,6 +22,10 @@ module.exports = {
   '/:url': {
     get: [
       Uploads.view
+    ],
+    delete: [
+      LoggedIn.isLoggedIn,
+      Uploads.remove
     ]
   }
 }

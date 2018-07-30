@@ -179,5 +179,38 @@ module.exports = {
         error: 'Requested file does not exist.'
       })
     }
+  },
+  async remove (req, res) {
+    try {
+      const urlModel = await Url.findOne({
+        where: {
+          url: req.params.url
+        },
+        include: ['file']
+      })
+
+      if (req.user.id !== urlModel.ownerId) {
+        return res.status(403).send({
+          error: 'You do not have permission to remove this file.'
+        })
+      }
+
+      const fileModel = urlModel.file
+      await urlModel.destroy()
+
+      res.send({
+        message: `Deleted ${req.params.url}.`
+      })
+
+      const remainingUrls = await fileModel.getUrls()
+      if (remainingUrls.length === 0) {
+        fs.unlink(fileModel.getPath())
+        fileModel.destroy()
+      }
+    } catch (error) {
+      res.status(404).send({
+        error: 'Requested file does not exist.'
+      })
+    }
   }
 }
