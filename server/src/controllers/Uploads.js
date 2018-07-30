@@ -107,6 +107,28 @@ function createFile (file) {
 }
 
 module.exports = {
+  async index (req, res) {
+    try {
+      const urls = await Url.findAll({
+        where: {
+          ownerId: req.user.id
+        },
+        attributes: ['filename', 'url', 'createdAt'],
+        raw: true,
+        limit: req.query.limit || 25,
+        offset: req.query.offset || 0,
+        order: [
+          ['createdAt', 'DESC']
+        ]
+      })
+
+      res.send(urls)
+    } catch (error) {
+      res.status(500).send({
+        error: 'Failed to index files.'
+      })
+    }
+  },
   async uploadFile (req, res) {
     try {
       // TODO: Check if file exists

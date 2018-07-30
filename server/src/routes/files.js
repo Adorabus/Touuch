@@ -11,6 +11,10 @@ module.exports = {
       LoggedIn.isLoggedIn,
       upload.single('file'),
       Uploads.uploadFile
+    ],
+    get: [
+      LoggedIn.isLoggedIn,
+      Uploads.index
     ]
   },
   '/hash': {
