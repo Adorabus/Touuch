@@ -6,8 +6,9 @@ const errorMessages = {
   username: 'Username must be 3 to 10 alphanumeric characters.',
   password: 'Password must be 8 to 16 characters.',
   filename: 'Invalid file name.',
+  originalname: 'Invalid file name.',
   hash: 'Invalid hash.',
-  default: 'Unknown error occurred.'
+  default: 'Bad input.'
 }
 
 const schemas = {
@@ -18,12 +19,15 @@ const schemas = {
   hash: Joi.string().hex()
 }
 
-function verifyInput (req, res, next, schema, descriptive = false, allowUnknown = false) {
-  const {error} = Joi.validate(req.body, schema, {allowUnknown})
+function verifyInput (req, res, next, schema, options) {
+  const target = options.target || req.body
+  const {error} = Joi.validate(target, schema, {
+    allowUnknown: options.allowUnknown
+  })
 
   if (error) {
     let errorMessage = 'Invalid input.'
-    if (descriptive) {
+    if (!options.vague) {
       const errKey = error.details[0].context.key
       errorMessage = errorMessages[errKey] || errorMessages.default
     }

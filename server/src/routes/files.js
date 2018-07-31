@@ -10,6 +10,7 @@ module.exports = {
     post: [
       LoggedIn.isLoggedIn,
       upload.single('file'),
+      UploadPolicy.file,
       Uploads.uploadFile
     ],
     get: [
@@ -20,6 +21,7 @@ module.exports = {
   '/hash': {
     post: [
       LoggedIn.isLoggedIn,
+      UploadPolicy.hash,
       Uploads.uploadHash
     ]
   },

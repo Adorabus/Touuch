@@ -131,7 +131,6 @@ module.exports = {
   },
   async uploadFile (req, res) {
     try {
-      // TODO: Check if file exists
       // store the hash in the file req.file object
       req.file.hash = await hashFile(req.file.path)
       let fileModel = await File.findOne({
