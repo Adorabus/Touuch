@@ -95,9 +95,7 @@ function createFile (file) {
         size: file.size
       })
 
-      const newPath = fileModel.getPath()
-      await fs.rename(file.path, newPath)
-      file.path = newPath
+      await fs.rename(file.path, fileModel.getPath())
 
       resolve(fileModel)
     } catch (error) {

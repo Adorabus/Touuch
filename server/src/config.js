@@ -1,6 +1,7 @@
 const path = require('path')
+const fs = require('fs')
 
-module.exports = {
+const config = {
   port: 80,
   maxFailedLogins: 10,
   maxFailedLoginsSpan: 1, // hours
@@ -21,6 +22,20 @@ module.exports = {
   touuch: {
     urlChars: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789',
     urlKeyLength: 4,
-    filesDirectory: path.join(path.resolve(__dirname), '../../', 'uploads')
+    filesDirectory: path.join(path.resolve(__dirname), '../../', 'uploads'),
+    filesDirectoryTemp: path.join(path.resolve(__dirname), '../../', 'uploads', 'temp')
   }
 }
+
+// modules are cached, so these functions will only occur on startup
+const dirExists = fs.existsSync(config.touuch.filesDirectory)
+if (!dirExists) {
+  fs.mkdirSync(config.touuch.filesDirectory)
+}
+
+const tempDirExists = fs.existsSync(config.touuch.filesDirectoryTemp)
+if (!tempDirExists) {
+  fs.mkdirSync(config.touuch.filesDirectoryTemp)
+}
+
+module.exports = config

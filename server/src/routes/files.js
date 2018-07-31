@@ -1,6 +1,6 @@
 const multer = require('multer')
 const config = require('../config')
-const upload = multer({dest: config.touuch.filesDirectory})
+const upload = multer({dest: config.touuch.filesDirectoryTemp})
 const Uploads = require('../controllers/Uploads')
 const UploadPolicy = require('../policies/Upload')
 const LoggedIn = require('../policies/LoggedIn')

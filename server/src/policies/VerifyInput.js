@@ -19,24 +19,33 @@ const schemas = {
   hash: Joi.string().hex()
 }
 
-function verifyInput (req, res, next, schema, options) {
-  const target = options.target || req.body
-  const {error} = Joi.validate(target, schema, {
-    allowUnknown: options.allowUnknown
-  })
-
-  if (error) {
-    let errorMessage = 'Invalid input.'
-    if (!options.vague) {
-      const errKey = error.details[0].context.key
-      errorMessage = errorMessages[errKey] || errorMessages.default
-    }
-
-    res.status(400).send({
-      error: errorMessage
+function verifyInput (req, res, next, schema, options = {}) {
+  try {
+    const target = options.target || req.body
+    const {error} = Joi.validate(target, schema, {
+      allowUnknown: options.allowUnknown
     })
-  } else {
-    next()
+
+    if (error) {
+      let errorMessage = 'Invalid input.'
+      if (!options.vague) {
+        const errKey = error.details[0].context.key
+        errorMessage = errorMessages[errKey] || errorMessages.default
+      }
+
+      res.status(400).send({
+        error: errorMessage
+      })
+
+      return false
+    } else {
+      next()
+      return true
+    }
+  } catch (error) {
+    res.status(500).send({
+      error: 'Input validation error.'
+    })
   }
 }
 
