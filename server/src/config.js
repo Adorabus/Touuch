@@ -23,7 +23,9 @@ const config = {
     urlChars: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789',
     urlKeyLength: 4,
     filesDirectory: path.join(path.resolve(__dirname), '../../', 'uploads'),
-    filesDirectoryTemp: path.join(path.resolve(__dirname), '../../', 'uploads', 'temp')
+    filesDirectoryTemp: path.join(path.resolve(__dirname), '../../', 'uploads', 'temp'),
+    previewsDirectory: path.join(path.resolve(__dirname), '../../', 'previews'),
+    previewResolution: 100
   }
 }
 

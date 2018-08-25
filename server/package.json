@@ -33,6 +33,7 @@
     "qrcode": "^1.2.0",
     "request-ip": "^2.1.1",
     "sequelize": "^4.38.0",
+    "shell-escape": "^0.2.0",
     "speakeasy": "^2.0.0"
   },
   "devDependencies": {

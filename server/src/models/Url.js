@@ -1,4 +1,6 @@
 const mime = require('mime-types')
+const path = require('path')
+const config = require('../config')
 
 module.exports = (sequelize, DataTypes) => {
   const Url = sequelize.define('Url', {
@@ -24,6 +26,10 @@ module.exports = (sequelize, DataTypes) => {
 
   Url.prototype.getMimeType = function () {
     return mime.lookup(this.filename) || 'application/octet-stream'
+  }
+
+  Url.prototype.getPreviewPath = function () {
+    return path.join(config.touuch.previewsDirectory, this.url)
   }
 
   return Url
