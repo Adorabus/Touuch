@@ -9,7 +9,7 @@ module.exports = (app) => {
     )
     .forEach((file) => {
       const route = require(path.join(__dirname, file))
-      const routePath = '/' + path.basename(file, '.js')
+      const routePath = '/api/' + path.basename(file, '.js')
       for (let [subpath, methods] of Object.entries(route)) {
         for (const [method, callbacks] of Object.entries(methods)) {
           if (subpath === '/') subpath = ''

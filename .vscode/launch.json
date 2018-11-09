@@ -8,7 +8,8 @@
       "type": "node",
       "request": "launch",
       "name": "Server Start",
-      "program": "${workspaceFolder}/server\\src\\app.js"
+      "cwd": "${workspaceFolder}\\server",
+      "program": "${workspaceFolder}\\server\\src\\app.js"
     }
   ]
 }
