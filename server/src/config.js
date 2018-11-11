@@ -40,4 +40,9 @@ if (!tempDirExists) {
   fs.mkdirSync(config.touuch.filesDirectoryTemp)
 }
 
+const previewDirExists = fs.existsSync(config.touuch.previewsDirectory)
+if (!previewDirExists) {
+  fs.mkdirSync(config.touuch.previewsDirectory)
+}
+
 module.exports = config

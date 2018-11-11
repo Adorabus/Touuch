@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Url.prototype.getPreviewPath = function () {
-    return path.join(config.touuch.previewsDirectory, this.url)
+    return path.join(config.touuch.previewsDirectory, this.url) + '.png'
   }
 
   return Url

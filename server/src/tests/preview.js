@@ -12,9 +12,13 @@ module.exports = {
   },
   async createPreview () {
     try {
-      const urlModel = await Url.findOne()
+      const urlModel = await Url.findOne({
+        where: {
+          url: 'nPxFr'
+        }
+      })
       const previewPath = await preview.createPreview(urlModel)
-      console.log('.')
+      console.log(previewPath)
     } catch (error) {
       console.error(error)
     }

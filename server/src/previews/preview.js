@@ -54,6 +54,7 @@ module.exports = {
         const filePath = urlModel.file.getPath()
         const dimensions = await getDimensions(filePath)
         const previewPath = urlModel.getPreviewPath()
+
         let newDimensions = `scale=${maxDimension}:-1`
         if (dimensions.height > dimensions.width) {
           newDimensions = `scale=-1:${maxDimension}`
