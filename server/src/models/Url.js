@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
   Url.associate = function (models) {
     Url.belongsTo(models.User, {foreignKey: 'ownerId', as: 'owner'})
     Url.belongsTo(models.File, {foreignKey: 'fileId', as: 'file'})
+    Url.addScope('defaultScope', {
+      include: ['file']
+    }, {
+      override: true
+    })
   }
 
   Url.prototype.getMimeType = function () {

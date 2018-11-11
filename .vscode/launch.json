@@ -10,6 +10,13 @@
       "name": "Server Start",
       "cwd": "${workspaceFolder}\\server",
       "program": "${workspaceFolder}\\server\\src\\app.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Test",
+      "cwd": "${workspaceFolder}\\server",
+      "program": "${workspaceFolder}\\server\\src\\tests\\index.js"
     }
   ]
 }

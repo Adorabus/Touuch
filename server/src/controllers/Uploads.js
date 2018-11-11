@@ -183,8 +183,7 @@ module.exports = {
       const urlModel = await Url.findOne({
         where: {
           url: req.params.url
-        },
-        include: ['file']
+        }
       })
 
       res.sendFile(urlModel.file.getPath(), {
@@ -204,8 +203,7 @@ module.exports = {
       const urlModel = await Url.findOne({
         where: {
           url: req.params.url
-        },
-        include: ['file']
+        }
       })
 
       if (req.user.id !== urlModel.ownerId) {
