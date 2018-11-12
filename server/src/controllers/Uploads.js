@@ -2,7 +2,7 @@ const fs = require('mz/fs')
 const blake2 = require('blake2')
 const config = require('../config')
 const {File, Url} = require('../models')
-const {randomInt} = require('../util')
+const {randomInt} = require('../util/math')
 const {urlChars, urlKeyLength} = config.touuch
 
 function hashFile (path) {

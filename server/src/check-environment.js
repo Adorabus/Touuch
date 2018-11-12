@@ -12,7 +12,7 @@ requiredVariables.forEach((variable) => {
 })
 
 if (process.env.NODE_ENV === 'development') {
-  console.log('Development Mode')
+  console.log('DEVELOPMENT MODE')
 } else if (process.env.NODE_ENV !== 'production') {
   console.log(`Unknown NODE_ENV value "${process.env.NODE_ENV}".`)
 }

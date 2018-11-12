@@ -45,26 +45,24 @@ function getDimensions (filePath) {
   })
 }
 
-// TODO: integrate with URL model
 module.exports = {
   getDimensions,
-  createPreview (urlModel) {
+  createPreview (inputPath, outputPath) {
     return new Promise(async (resolve, reject) => {
       try {
-        const filePath = urlModel.file.getPath()
-        const dimensions = await getDimensions(filePath)
-        const previewPath = urlModel.getPreviewPath()
+        const dimensions = await getDimensions(inputPath)
 
         let newDimensions = `scale=${maxDimension}:-1`
         if (dimensions.height > dimensions.width) {
           newDimensions = `scale=-1:${maxDimension}`
         }
 
-        // TODO: FILE OUTPUT FORMAT
         const process = spawn(ffmpeg.path, [
           '-loglevel', 'error',
-          '-i', filePath,
-          '-vf', newDimensions, previewPath
+          '-i', inputPath,
+          '-f', 'image2',
+          '-vcodec', 'png',
+          '-vf', newDimensions, outputPath
         ])
 
         process.stderr.setEncoding('utf-8')
@@ -74,29 +72,13 @@ module.exports = {
 
         process.on('close', (code) => {
           if (code === 0) {
-            resolve(previewPath)
+            resolve(outputPath)
           } else {
             reject(new Error('FFMPEG exited with non-zero exit code.'))
           }
         })
       } catch (error) {
-        console.error(error)
         reject(new Error('Failed to create preview.'))
-      }
-    })
-  },
-  getPreview (urlModel) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const previewPath = urlModel.getPreviewPath()
-        const exists = await fs.access(previewPath, fs.constants.F_OK)
-        if (exists) {
-          resolve(previewPath)
-        } else {
-          resolve(null)
-        }
-      } catch (error) {
-        reject(error)
       }
     })
   }

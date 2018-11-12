@@ -1,6 +1,11 @@
 const path = require('path')
 const fs = require('fs')
 
+const storageDirectory = process.env.STORAGE_DIR || path.join(path.resolve(__dirname), '../storage')
+const filesDirectory = path.join(storageDirectory, 'uploads')
+const filesDirectoryTemp = path.join(storageDirectory, 'temp')
+const previewsDirectory = path.join(storageDirectory, 'previews')
+
 const config = {
   port: 80,
   maxFailedLogins: 10,
@@ -22,27 +27,17 @@ const config = {
   touuch: {
     urlChars: 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ123456789',
     urlKeyLength: 4,
-    filesDirectory: path.join(path.resolve(__dirname), '../../', 'uploads'),
-    filesDirectoryTemp: path.join(path.resolve(__dirname), '../../', 'uploads', 'temp'),
-    previewsDirectory: path.join(path.resolve(__dirname), '../../', 'previews'),
     previewResolution: 100
+  },
+  storage: {storageDirectory, filesDirectory, filesDirectoryTemp, previewsDirectory}
+}
+
+// modules are cached, so this will only occur on startup
+Object.values(config.storage).forEach((dir) => {
+  const dirExists = fs.existsSync(dir)
+  if (!dirExists) {
+    fs.mkdirSync(dir)
   }
-}
-
-// modules are cached, so these functions will only occur on startup
-const dirExists = fs.existsSync(config.touuch.filesDirectory)
-if (!dirExists) {
-  fs.mkdirSync(config.touuch.filesDirectory)
-}
-
-const tempDirExists = fs.existsSync(config.touuch.filesDirectoryTemp)
-if (!tempDirExists) {
-  fs.mkdirSync(config.touuch.filesDirectoryTemp)
-}
-
-const previewDirExists = fs.existsSync(config.touuch.previewsDirectory)
-if (!previewDirExists) {
-  fs.mkdirSync(config.touuch.previewsDirectory)
-}
+})
 
 module.exports = config

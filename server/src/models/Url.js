@@ -1,6 +1,7 @@
 const mime = require('mime-types')
 const path = require('path')
 const config = require('../config')
+const {createPreview} = require('../util/preview')
 
 module.exports = (sequelize, DataTypes) => {
   const Url = sequelize.define('Url', {
@@ -13,8 +14,23 @@ module.exports = (sequelize, DataTypes) => {
       type: 'VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_bin',
       allowNull: false,
       unique: true
+    },
+    noPreview: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, {
+    hooks: {
+      async beforeCreate (urlModel) {
+        try {
+          const fileModel = await urlModel.getFile()
+          await createPreview(fileModel.getPath(), urlModel.getPreviewPath())
+        } catch (error) {
+          urlModel.noPreview = true
+        }
+      }
+    },
     timestamps: true,
     paranoid: true
   })
@@ -34,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Url.prototype.getPreviewPath = function () {
-    return path.join(config.touuch.previewsDirectory, this.url) + '.png'
+    return this.noPreview || path.join(config.storage.previewsDirectory, this.url)
   }
 
   return Url

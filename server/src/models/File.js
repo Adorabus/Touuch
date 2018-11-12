@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   File.prototype.getPath = function () {
-    return path.join(config.touuch.filesDirectory, this.hash)
+    return path.join(config.storage.filesDirectory, this.hash)
   }
 
   return File

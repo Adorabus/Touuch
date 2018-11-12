@@ -1,4 +1,4 @@
-const preview = require('../previews/preview')
+const preview = require('../util/preview')
 const {Url} = require('../models')
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     try {
       const urlModel = await Url.findOne({
         where: {
-          url: 'nPxFr'
+          url: 'a8FD7'
         }
       })
       const previewPath = await preview.createPreview(urlModel)
