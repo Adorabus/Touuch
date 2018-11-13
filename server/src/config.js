@@ -15,8 +15,8 @@ const config = {
     user: process.env.DB_USER || 'touuch2',
     password: process.env.DB_PASS,
     options: {
-      dialect: process.env.DIALECT || 'mysql',
-      host: process.env.HOST || 'localhost',
+      dialect: process.env.DB_DIALECT || 'mysql',
+      host: process.env.DB_HOST || 'localhost',
       operatorsAliases: false,
       logging: false
     }

@@ -6,8 +6,101 @@ const config = require('../config')
 const {spawn} = require('child_process')
 const ffprobe = require('ffprobe-static')
 const ffmpeg = require('ffmpeg-static')
+const path = require('path')
+const aniGif = require('animated-gif-detector')
 
 const maxDimension = config.touuch.previewResolution
+
+const extImage = [
+  'png',
+  'jpg',
+  'jpeg',
+  'gif',
+  'bmp',
+  'psd',
+  'ico',
+  'tga',
+  'tif',
+  'tiff'
+]
+
+const extVideo = [
+  'webm',
+  'gif',
+  'avi',
+  'mp4',
+  'mkv',
+  'flv',
+  'f4v',
+  'mov',
+  'wmv',
+  '3gp'
+]
+
+function isAnimated (filePath) {
+  return new Promise((resolve, reject) => {
+    try {
+      let animated = false
+      fs.createReadStream(filePath)
+        .pipe(aniGif())
+        .once('animated', () => {
+          animated = true
+        })
+        .on('finish', () => {
+          resolve(animated)
+        })
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
+
+function getFFArgs (inputPath, outputPath, ext) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const dimensions = await getDimensions(inputPath)
+      let newDimensions = `scale=${maxDimension}:-1`
+      if (dimensions.height > dimensions.width) {
+        newDimensions = `scale=-1:${maxDimension}`
+      }
+
+      let args = [
+        '-v', 'error',
+        '-i', inputPath
+      ]
+
+      if (!ext) {
+        throw new Error('Cannot create preview for file without extension.')
+      }
+
+      let animatedGif = (ext === 'gif') && (await isAnimated(inputPath))
+      if (animatedGif || extVideo.includes(ext)) {
+        args.push(
+          '-c:v', 'libvpx',
+          '-b:v', '200K',
+          '-crf', '12',
+          '-ss', '0',
+          '-t', '5',
+          '-an', '-y',
+          '-f', 'webm'
+        )
+      } else if (extImage.includes(ext)) {
+        args.push(
+          '-f', 'image2',
+          '-vcodec', 'png'
+        )
+      } else {
+        throw new Error(`Cannot create preview for file with extension: ${ext}`)
+      }
+
+      args.push('-vf', newDimensions, outputPath)
+
+      resolve(args)
+    } catch (error) {
+      reject(error)
+    }
+  })
+}
 
 function getDimensions (filePath) {
   return new Promise((resolve, reject) => {
@@ -47,23 +140,12 @@ function getDimensions (filePath) {
 
 module.exports = {
   getDimensions,
-  createPreview (inputPath, outputPath) {
+  createPreview (inputPath, outputPath, ext) {
     return new Promise(async (resolve, reject) => {
       try {
-        const dimensions = await getDimensions(inputPath)
+        const args = await getFFArgs(inputPath, outputPath, ext)
 
-        let newDimensions = `scale=${maxDimension}:-1`
-        if (dimensions.height > dimensions.width) {
-          newDimensions = `scale=-1:${maxDimension}`
-        }
-
-        const process = spawn(ffmpeg.path, [
-          '-loglevel', 'error',
-          '-i', inputPath,
-          '-f', 'image2',
-          '-vcodec', 'png',
-          '-vf', newDimensions, outputPath
-        ])
+        const process = spawn(ffmpeg.path, args)
 
         process.stderr.setEncoding('utf-8')
         process.stderr.on('data', (data) => {
@@ -81,5 +163,8 @@ module.exports = {
         reject(new Error('Failed to create preview.'))
       }
     })
+  },
+  getFallbackPreview (fileExtension) {
+
   }
 }

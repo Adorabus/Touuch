@@ -24,8 +24,9 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       async beforeCreate (urlModel) {
         try {
+          const ext = path.extname(urlModel.filename).substr(1)
           const fileModel = await urlModel.getFile()
-          await createPreview(fileModel.getPath(), urlModel.getPreviewPath())
+          await createPreview(fileModel.getPath(), urlModel.getPreviewPath(), ext)
         } catch (error) {
           urlModel.noPreview = true
         }
