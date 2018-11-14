@@ -6,10 +6,15 @@ const config = require('../config')
 const {spawn} = require('child_process')
 const ffprobe = require('ffprobe-static')
 const ffmpeg = require('ffmpeg-static')
-const path = require('path')
 const aniGif = require('animated-gif-detector')
+const isBinaryFile = require('isbinaryfile')
+const path = require('path')
 
 const maxDimension = config.touuch.previewResolution
+const resourcesDirectory = path.join(__dirname, '../../resources')
+const textPreviewBackground = path.join(resourcesDirectory, 'images', 'text-bg.png')
+const textFontPath = path.join(resourcesDirectory, 'fonts', 'Inconsolata-Regular.ttf')
+const ffFontFile = path.relative(process.cwd(), textFontPath).replace(/\\/g, '/')
 
 const extImage = [
   'png',
@@ -55,19 +60,34 @@ function isAnimated (filePath) {
   })
 }
 
+function isBinary (filePath) {
+  return new Promise((resolve, reject) => {
+    isBinaryFile(filePath, (error, binary) => {
+      if (error) {
+        reject(error)
+      } else {
+        resolve(binary)
+      }
+    })
+  })
+}
+
 function getFFArgs (inputPath, outputPath, ext) {
   return new Promise(async (resolve, reject) => {
     try {
-      const dimensions = await getDimensions(inputPath)
-      let newDimensions = `scale=${maxDimension}:-1`
-      if (dimensions.height > dimensions.width) {
-        newDimensions = `scale=-1:${maxDimension}`
+      let newDimensions
+      try {
+        const dimensions = await getDimensions(inputPath)
+        newDimensions = `scale=${maxDimension}:-1`
+        if (dimensions.height > dimensions.width) {
+          newDimensions = `scale=-1:${maxDimension}`
+        }
+      } catch (error) {
+        newDimensions = `scale=${maxDimension}:${maxDimension}`
       }
 
-      let args = [
-        '-v', 'error',
-        '-i', inputPath
-      ]
+      // base args, always used
+      let args = ['-v', 'error', '-y']
 
       if (!ext) {
         throw new Error('Cannot create preview for file without extension.')
@@ -76,24 +96,42 @@ function getFFArgs (inputPath, outputPath, ext) {
       let animatedGif = (ext === 'gif') && (await isAnimated(inputPath))
       if (animatedGif || extVideo.includes(ext)) {
         args.push(
+          '-ss', '0',
+          '-t', '5',
+          '-i', inputPath,
           '-c:v', 'libvpx',
           '-b:v', '200K',
           '-crf', '12',
-          '-ss', '0',
-          '-t', '5',
-          '-an', '-y',
-          '-f', 'webm'
+          '-an',
+          '-f', 'webm',
+          '-vf', newDimensions,
+          '-auto-alt-ref', '0'
         )
       } else if (extImage.includes(ext)) {
         args.push(
+          '-i', inputPath,
           '-f', 'image2',
-          '-vcodec', 'png'
+          '-vcodec', 'png',
+          '-vf', newDimensions
         )
       } else {
-        throw new Error(`Cannot create preview for file with extension: ${ext}`)
+        const binary = await isBinary(inputPath)
+        if (binary) {
+          throw new Error(`Cannot create preview for file with extension: ${ext}`)
+        } else { // text file
+          const relativeFilePath = path.relative(process.cwd(), inputPath).replace(/\\/g, '/') // ffmpeg doesn't like Windows drive letters
+          const textFilter = `drawtext=textfile=${relativeFilePath}:fontcolor=#a6d627:fontfile=${ffFontFile}:fontsize=12:x=4:y=4:`
+
+          args.push(
+            '-i', textPreviewBackground,
+            '-vf', textFilter,
+            '-f', 'image2',
+            '-vcodec', 'png'
+          )
+        }
       }
 
-      args.push('-vf', newDimensions, outputPath)
+      args.push(outputPath)
 
       resolve(args)
     } catch (error) {
@@ -163,8 +201,5 @@ module.exports = {
         reject(new Error('Failed to create preview.'))
       }
     })
-  },
-  getFallbackPreview (fileExtension) {
-
   }
 }

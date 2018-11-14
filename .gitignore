@@ -61,5 +61,4 @@ typings/
 .next
 
 # file uploads
-uploads/
-previews/
+server/storage/

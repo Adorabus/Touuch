@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       async beforeCreate (urlModel) {
         try {
-          const ext = path.extname(urlModel.filename).substr(1)
+          const split = urlModel.filename.split('.')
+          const ext = split[split.length - 1]
           const fileModel = await urlModel.getFile()
           await createPreview(fileModel.getPath(), urlModel.getPreviewPath(), ext)
         } catch (error) {
@@ -51,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Url.prototype.getPreviewPath = function () {
-    return this.noPreview || path.join(config.storage.previewsDirectory, this.url)
+    return this.noPreview || path.join(config.storage.previewsDirectory, this.url) + '.png'
   }
 
   return Url
