@@ -25,6 +25,11 @@ module.exports = {
       Uploads.uploadHash
     ]
   },
+  '/:url/preview': {
+    get: [
+      Uploads.preview
+    ]
+  },
   '/:url': {
     get: [
       Uploads.view

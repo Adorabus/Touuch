@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    animated: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     }
   }, {
     hooks: {
@@ -27,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
           const split = urlModel.filename.split('.')
           const ext = split[split.length - 1]
           const fileModel = await urlModel.getFile()
-          await createPreview(fileModel.getPath(), urlModel.getPreviewPath(), ext)
+          const {animated} = await createPreview(fileModel.getPath(), urlModel.getPreviewPath(), ext)
+          urlModel.animated = animated
         } catch (error) {
           urlModel.noPreview = true
         }
@@ -52,7 +58,7 @@ module.exports = (sequelize, DataTypes) => {
   }
 
   Url.prototype.getPreviewPath = function () {
-    return this.noPreview || path.join(config.storage.previewsDirectory, this.url) + '.png'
+    return this.noPreview ? undefined : path.join(config.storage.previewsDirectory, this.url)
   }
 
   return Url

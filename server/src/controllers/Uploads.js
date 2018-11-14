@@ -198,6 +198,31 @@ module.exports = {
       })
     }
   },
+  async preview (req, res) {
+    try {
+      const urlModel = await Url.findOne({
+        where: {
+          url: req.params.url
+        }
+      })
+
+      const previewPath = urlModel.getPreviewPath()
+      if (previewPath) {
+        res.sendFile(previewPath, {
+          headers: {
+            'Content-Type': urlModel.animated ? 'video/webm' : 'image/png',
+            'Content-Disposition': `inline; filename=${urlModel.url}.${urlModel.animated ? 'webm' : 'png'}`
+          }
+        })
+      } else {
+        res.redirect(301, '/assets/file.png')
+      }
+    } catch (error) {
+      res.status(404).send({
+        error: 'No preview available.'
+      })
+    }
+  },
   async remove (req, res) {
     try {
       const urlModel = await Url.findOne({

@@ -88,6 +88,7 @@ function getFFArgs (inputPath, outputPath, ext) {
 
       // base args, always used
       let args = ['-v', 'error', '-y']
+      let animated = false
 
       if (!ext) {
         throw new Error('Cannot create preview for file without extension.')
@@ -95,6 +96,7 @@ function getFFArgs (inputPath, outputPath, ext) {
 
       let animatedGif = (ext === 'gif') && (await isAnimated(inputPath))
       if (animatedGif || extVideo.includes(ext)) {
+        animated = true
         args.push(
           '-ss', '0',
           '-t', '5',
@@ -133,7 +135,7 @@ function getFFArgs (inputPath, outputPath, ext) {
 
       args.push(outputPath)
 
-      resolve(args)
+      resolve({args, animated})
     } catch (error) {
       reject(error)
     }
@@ -181,7 +183,7 @@ module.exports = {
   createPreview (inputPath, outputPath, ext) {
     return new Promise(async (resolve, reject) => {
       try {
-        const args = await getFFArgs(inputPath, outputPath, ext)
+        const {args, animated} = await getFFArgs(inputPath, outputPath, ext)
 
         const process = spawn(ffmpeg.path, args)
 
@@ -192,7 +194,7 @@ module.exports = {
 
         process.on('close', (code) => {
           if (code === 0) {
-            resolve(outputPath)
+            resolve({outputPath, animated})
           } else {
             reject(new Error('FFMPEG exited with non-zero exit code.'))
           }
