@@ -144,7 +144,7 @@ module.exports = {
       }
 
       const urlModel = await createUrl(fileModel, req.user, req.file.originalname)
-      res.send({
+      res.status(201).send({
         url: urlModel.url
       })
     } catch (error) {
