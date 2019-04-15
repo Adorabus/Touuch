@@ -20,18 +20,30 @@ html, body {
   color: #dfe7ef;
 }
 #nav {
-  padding: 30px;
+  @include select(none);
+  text-align: left;
+  height: 60px;
+  outline: 1px solid #0f1113;
+  border-bottom: 1px solid #30363a;
+
   a {
+    padding-left: 22px;
+    padding-right: 22px;
+    line-height: 60px;
     font-weight: bold;
     color: #f02a55;
-    padding: 5px;
+    border-right: 1px solid #30363a;
+    display: inline-block;
+
     &.router-link-exact-active {
       text-decoration: underline;
+      cursor: default;
     }
   }
-  outline: 1px solid #f02a55;
 }
 a {
   text-decoration: none;
+}
+#logo {
 }
 </style>

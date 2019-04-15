@@ -5,5 +5,12 @@ module.exports = {
     port: 8999,
     hot: true,
     disableHostCheck: true
+  },
+  css: {
+    loaderOptions: {
+      sass: {
+        data: `@import "@/style/_mixins.scss";`
+      }
+    }
   }
 }

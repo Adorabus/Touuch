@@ -1,0 +1,9 @@
+@mixin select($type: unset) {
+  -webkit-touch-callout: $type; /* iOS Safari */
+    -webkit-user-select: $type; /* Safari */
+     -khtml-user-select: $type; /* Konqueror HTML */
+       -moz-user-select: $type; /* Firefox */
+        -ms-user-select: $type; /* Internet Explorer/Edge */
+            user-select: $type; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
