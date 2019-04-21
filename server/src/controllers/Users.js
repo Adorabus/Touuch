@@ -60,12 +60,12 @@ module.exports = {
   },
   async index (req, res) {
     try {
-      const limit = req.query.limit || 10
+      const limit = parseInt(req.query.limit) || 10
       const search = req.query.search || ''
       const disabled = req.query.disabled === 'true'
       const order = (req.query.descending === 'true') ? 'DESC' : 'ASC'
       const orderBy = req.query.orderBy || 'id'
-      let offset = req.query.offset || 1
+      let offset = parseInt(req.query.offset) || 1
       offset--
       offset *= limit
 

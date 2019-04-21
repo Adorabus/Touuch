@@ -111,10 +111,9 @@ module.exports = {
         where: {
           ownerId: req.user.id
         },
-        attributes: ['filename', 'url', 'createdAt'],
-        raw: true,
-        limit: req.query.limit || 25,
-        offset: req.query.offset || 0,
+        attributes: ['filename', 'url', 'createdAt', 'animated'],
+        limit: parseInt(req.query.limit) || 25,
+        offset: parseInt(req.query.offset) || 0,
         order: [
           ['createdAt', 'DESC']
         ]
