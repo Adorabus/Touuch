@@ -3,7 +3,9 @@
     #nav
       router-link(to='/') Home
       router-link(to='/huh') Huh
-    router-view
+      span(v-if='$store.state.isLoggedIn') {{ this.$store.state.user.username }}
+    #view-container
+      router-view
 </template>
 
 <style lang="scss">
@@ -25,6 +27,7 @@ html, body {
   height: 60px;
   outline: 1px solid #0f1113;
   border-bottom: 1px solid #30363a;
+  margin-bottom: 30px;
 
   a {
     padding-left: 22px;
@@ -45,5 +48,9 @@ a {
   text-decoration: none;
 }
 #logo {
+}
+#view-container {
+  display: flex;
+  justify-content: center;
 }
 </style>

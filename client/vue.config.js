@@ -4,7 +4,12 @@ module.exports = {
     host: '0.0.0.0',
     port: 8999,
     hot: true,
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost/'
+      }
+    }
   },
   css: {
     loaderOptions: {

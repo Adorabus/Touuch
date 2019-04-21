@@ -17,6 +17,16 @@ export default new Router({
       path: '/huh',
       name: 'huh',
       component: () => import('./views/Huh.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('./views/Login.vue')
+    },
+    {
+      path: '/files',
+      name: 'files',
+      component: () => import('./views/Files.vue')
     }
   ]
 })
