@@ -99,7 +99,7 @@ function getFFArgs (inputPath, outputPath, ext) {
         animated = true
         args.push(
           '-ss', '0',
-          '-t', '5',
+          '-t', '7',
           '-i', inputPath,
           '-c:v', 'libvpx',
           '-b:v', '200K',
