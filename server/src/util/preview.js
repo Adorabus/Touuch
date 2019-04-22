@@ -75,16 +75,16 @@ function isBinary (filePath) {
 function getFFArgs (inputPath, outputPath, ext) {
   return new Promise(async (resolve, reject) => {
     try {
-      let newDimensions
-      try {
-        const dimensions = await getDimensions(inputPath)
-        newDimensions = `scale=${maxDimension}:-1`
-        if (dimensions.height > dimensions.width) {
-          newDimensions = `scale=-1:${maxDimension}`
-        }
-      } catch (error) {
-        newDimensions = `scale=${maxDimension}:${maxDimension}`
-      }
+      let newDimensions = 'scale=100:100:force_original_aspect_ratio=increase,crop=100:100'
+      // try {
+      //   const dimensions = await getDimensions(inputPath)
+      //   newDimensions = `scale=${maxDimension}:-1`
+      //   if (dimensions.height > dimensions.width) {
+      //     newDimensions = `scale=-1:${maxDimension}`
+      //   }
+      // } catch (error) {
+      //   newDimensions = `scale=${maxDimension}:${maxDimension}`
+      // }
 
       // base args, always used
       let args = ['-v', 'error', '-y']
