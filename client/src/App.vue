@@ -2,13 +2,15 @@
   #app
     #nav
       router-link(to='/') Home
-      router-link(to='/huh') Huh
+      router-link(to='/files') Files
+      router-link(to='/login') Login (temp)
       span(v-if='$store.state.isLoggedIn') {{ this.$store.state.user.username }}
     #view-container
       router-view
 </template>
 
 <style lang="scss">
+/* TODO: Maybe move global stuff into separate file. */
 html, body {
   margin: 0;
   padding: 0;
@@ -46,6 +48,18 @@ html, body {
 }
 a {
   text-decoration: none;
+}
+input[type=text], input[type=password] {
+  color: #fff;
+  background: #181818;
+  border: 1px solid #222;
+  padding: 5px;
+  margin: 5px;
+  font-size: 12pt;
+
+  &:focus {
+    outline: 1px solid rgb(255, 33, 85);
+  }
 }
 #logo {
 }
