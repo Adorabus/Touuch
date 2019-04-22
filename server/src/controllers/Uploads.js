@@ -179,6 +179,9 @@ module.exports = {
   },
   async view (req, res) {
     try {
+      // throw away extensions TODO: enforce matching type (no pranks bro)
+      req.params.url = req.params.url.split('.')[0]
+
       const urlModel = await Url.findOne({
         where: {
           url: req.params.url
