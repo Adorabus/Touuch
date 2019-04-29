@@ -217,7 +217,7 @@ module.exports = {
           }
         })
       } else {
-        res.redirect(301, '/assets/file.png')
+        res.redirect(301, '/file.png')
       }
     } catch (error) {
       res.status(404).send({

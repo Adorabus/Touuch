@@ -1,5 +1,5 @@
 <template lang="pug">
-  .file
+  .file(:style='`border: 1px solid ${extColor}`')
     .preview
       a(:href='`/api/files/${upload.url}`')
         img(v-if='!upload.animated', :src='`/api/files/${upload.url}/preview`', draggable='false')
@@ -8,8 +8,22 @@
 </template>
 
 <script>
+const extColors = {
+  png: 'rgba(255, 0, 106, 1)',
+  jpg: 'rgba(255, 106, 0, 1)',
+  jpeg: 'rgba(255, 106, 0, 1)',
+  mp4: 'rgba(144, 0, 255, 1)',
+  gif: 'rgba(93, 235, 33, 1)'
+}
+
 export default {
-  props: ['upload']
+  props: ['upload'],
+  computed: {
+    extColor () {
+      const [ext] = this.upload.filename.toLowerCase().split('.').slice(-1)
+      return extColors[ext] || 'rgba(255, 255, 255, 1)'
+    }
+  }
 }
 </script>
 
@@ -38,7 +52,7 @@ export default {
     height: 16px;
     line-height: 16px;
     font-size: 8pt;
-    background: url(~@/assets/bg-black.png);
+    background: hsla(0, 0%, 0%, 0.75);
     font-family: 'Open Sans', sans-serif;
   }
 }

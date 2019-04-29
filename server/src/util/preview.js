@@ -75,7 +75,7 @@ function isBinary (filePath) {
 function getFFArgs (inputPath, outputPath, ext) {
   return new Promise(async (resolve, reject) => {
     try {
-      let newDimensions = 'scale=100:100:force_original_aspect_ratio=increase,crop=100:100'
+      let newDimensions = 'scale=100:100:flags=neighbor:force_original_aspect_ratio=increase,crop=100:100'
       // try {
       //   const dimensions = await getDimensions(inputPath)
       //   newDimensions = `scale=${maxDimension}:-1`

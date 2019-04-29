@@ -1,5 +1,5 @@
 <template lang="pug">
-  .files-list
+  #files-list
     file(v-for='upload in uploads', :upload='upload', :key='upload.url')
 </template>
 
@@ -13,7 +13,8 @@ export default {
   },
   data () {
     return {
-      uploads: []
+      uploads: [],
+      managing: false
     }
   },
   async mounted () {
@@ -30,7 +31,7 @@ export default {
 </script>
 
 <style lang="scss">
-.files-list {
+#files-list {
   width: 80%;
 }
 </style>
