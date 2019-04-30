@@ -1,4 +1,5 @@
 const fs = require('mz/fs')
+const path = require('path')
 const blake2 = require('blake2')
 const config = require('../config')
 const {File, Url} = require('../models')
@@ -90,13 +91,11 @@ function createUrl (fileModel, user, filename) {
 function createFile (file) {
   return new Promise(async (resolve, reject) => {
     try {
-      const fileModel = await File.create({
-        hash: file.hash,
-        size: file.size
-      })
+      const {hash, size} = file
+      const newPath = path.join(config.storage.filesDirectory, hash)
+      await fs.rename(file.path, newPath) // move the file first, so file model hooks can access it
 
-      await fs.rename(file.path, fileModel.getPath())
-
+      const fileModel = await File.create({hash, size})
       resolve(fileModel)
     } catch (error) {
       reject(error)
@@ -136,6 +135,7 @@ module.exports = {
         }
       })
 
+      // if this file hash exists, discard the upload
       if (fileModel) {
         await fs.unlink(req.file.path)
       } else {
@@ -147,6 +147,7 @@ module.exports = {
         url: urlModel.url
       })
     } catch (error) {
+      console.error(error)
       res.status(500).send({
         error: 'Upload failed.'
       })

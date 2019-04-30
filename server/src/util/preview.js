@@ -2,7 +2,7 @@
 // check for error code
 // if successful, resolution is parsedJson.streams.width x parsedJson.streams.height
 const fs = require('mz/fs')
-const config = require('../config')
+// const config = require('../config')
 const {spawn} = require('child_process')
 const ffprobe = require('ffprobe-static')
 const ffmpeg = require('ffmpeg-static')
@@ -10,7 +10,7 @@ const aniGif = require('animated-gif-detector')
 const isBinaryFile = require('isbinaryfile')
 const path = require('path')
 
-const maxDimension = config.touuch.previewResolution
+// const maxDimension = config.touuch.previewResolution
 const resourcesDirectory = path.join(__dirname, '../../resources')
 const textPreviewBackground = path.join(resourcesDirectory, 'images', 'text-bg.png')
 const textFontPath = path.join(resourcesDirectory, 'fonts', 'Inconsolata-Regular.ttf')
