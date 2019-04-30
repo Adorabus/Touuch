@@ -1,4 +1,4 @@
-const mime = require('mime-types')
+// const mime = require('mime-types')
 const path = require('path')
 const config = require('../config')
 const {createPreview} = require('../util/preview')
@@ -29,9 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       async beforeCreate (urlModel) {
         try {
-          const split = urlModel.filename.split('.')
-          const ext = split[split.length - 1]
           const fileModel = await urlModel.getFile()
+          const ext = fileModel.fileType.extension
           const {animated} = await createPreview(fileModel.getPath(), urlModel.getPreviewPath(), ext)
           urlModel.animated = animated
         } catch (error) {
@@ -53,9 +52,9 @@ module.exports = (sequelize, DataTypes) => {
     })
   }
 
-  Url.prototype.getMimeType = function () {
-    return mime.lookup(this.filename) || 'application/octet-stream'
-  }
+  // Url.prototype.getMimeType = function () {
+  //   return mime.lookup(this.filename) || 'application/octet-stream'
+  // }
 
   Url.prototype.getPreviewPath = function () {
     return this.noPreview ? undefined : path.join(config.storage.previewsDirectory, this.url)

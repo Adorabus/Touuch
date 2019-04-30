@@ -191,7 +191,7 @@ module.exports = {
 
       res.sendFile(urlModel.file.getPath(), {
         headers: {
-          'Content-Type': urlModel.getMimeType(),
+          'Content-Type': urlModel.file.fileType.mimeType,
           'Content-Disposition': `inline; filename=${urlModel.filename}`
         }
       })

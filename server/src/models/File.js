@@ -37,6 +37,11 @@ module.exports = (sequelize, DataTypes) => {
   File.associate = function (models) {
     File.hasMany(models.Url, {foreignKey: 'fileId'})
     File.belongsTo(models.FileType, {foreignKey: 'fileTypeId', as: 'fileType'})
+    File.addScope('defaultScope', {
+      include: ['fileType']
+    }, {
+      override: true
+    })
   }
 
   File.prototype.getPath = function () {
