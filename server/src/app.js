@@ -34,7 +34,7 @@ app.use(function (error, req, res, next) { // eslint-disable-line no-unused-vars
 require('./passport')
 require('./routes')(app)
 
-const RESET_DB = false
+const RESET_DB = true
 
 sequelize.sync({force: RESET_DB}) // TODO: Remove force
   // TODO: Remove async
