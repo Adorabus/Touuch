@@ -13,7 +13,6 @@
     "url": "github:Adorabus/Touuch"
   },
   "dependencies": {
-    "animated-gif-detector": "^1.2.0",
     "bcryptjs": "^2.4.3",
     "blake2": "^2.0.1",
     "body-parser": "^1.18.3",

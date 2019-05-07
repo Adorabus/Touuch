@@ -107,7 +107,7 @@ module.exports = {
   async index (req, res) {
     try {
       const urls = await sequelize.query(`
-        SELECT urls.filename, urls.url, urls.createdAt, files.animated
+        SELECT urls.filename, urls.url, urls.createdAt, files.isAnimated, files.isText
         FROM urls
         INNER JOIN files ON urls.fileId=files.id
         WHERE urls.ownerId = :ownerId
@@ -125,9 +125,10 @@ module.exports = {
         }
       })
 
-      // convert the joined column to boolean
+      // convert the joined boolean columns to boolean
       for (let i = 0, len = urls.length; i < len; i++) {
-        urls[i].animated = !!urls[i].animated
+        urls[i].isAnimated = !!urls[i].isAnimated
+        urls[i].isText = !!urls[i].isText
       }
 
       res.send(urls)
@@ -222,12 +223,12 @@ module.exports = {
         }
       })
 
-      const previewPath = urlModel.getPreviewPath()
+      const previewPath = urlModel.file.getPreviewPath()
       if (previewPath) {
         res.sendFile(previewPath, {
           headers: {
-            'Content-Type': urlModel.animated ? 'video/webm' : 'image/png',
-            'Content-Disposition': `inline; filename=${urlModel.url}.${urlModel.animated ? 'webm' : 'png'}`
+            'Content-Type': urlModel.isAnimated ? 'video/webm' : 'image/png',
+            'Content-Disposition': `inline; filename=${urlModel.url}.${urlModel.isAnimated ? 'webm' : 'png'}`
           }
         })
       } else {

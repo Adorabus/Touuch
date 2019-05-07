@@ -3,8 +3,13 @@ const config = require('../config')
 const {spawn} = require('child_process')
 const ffprobe = require('ffprobe-static')
 const isBinaryFile = require('isbinaryfile')
-const aniGif = require('animated-gif-detector')
 const fs = require('mz/fs')
+const {createPreview, countFrames} = require('../util/preview')
+
+const resourcesDirectory = path.join(__dirname, '../../resources')
+const textPreviewBackground = path.join(resourcesDirectory, 'images', 'text-bg.png')
+const textFontPath = path.join(resourcesDirectory, 'fonts', 'Inconsolata-Regular.ttf')
+const ffFontFile = path.relative(process.cwd(), textFontPath).replace(/\\/g, '/')
 
 function getIsText (filePath) {
   return new Promise((resolve, reject) => {
@@ -54,24 +59,6 @@ function getDimensions (filePath) {
   })
 }
 
-function isAnimated (filePath) {
-  return new Promise((resolve, reject) => {
-    try {
-      let animated = false
-      fs.createReadStream(filePath)
-        .pipe(aniGif())
-        .once('animated', () => {
-          animated = true
-        })
-        .on('finish', () => {
-          resolve(animated)
-        })
-    } catch (error) {
-      reject(error)
-    }
-  })
-}
-
 module.exports = (sequelize, DataTypes) => {
   const File = sequelize.define('File', {
     hash: {
@@ -82,8 +69,13 @@ module.exports = (sequelize, DataTypes) => {
     size: DataTypes.BIGINT.UNSIGNED,
     width: DataTypes.INTEGER.UNSIGNED,
     height: DataTypes.INTEGER.UNSIGNED,
-    animated: DataTypes.BOOLEAN,
+    isAnimated: DataTypes.BOOLEAN,
     isText: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
+    noPreview: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
@@ -103,8 +95,17 @@ module.exports = (sequelize, DataTypes) => {
             fileModel.height = dimensions.height
 
             // so far so good, is it animated?
-            fileModel.animated = await isAnimated(filePath)
+            const frameCount = await countFrames(filePath)
+            fileModel.isAnimated = frameCount && frameCount > 1
           } catch (error) { }
+        }
+
+        // generate a preview
+        try {
+          const ffArgs = await fileModel.getFFArgs()
+          await createPreview(ffArgs)
+        } catch (error) {
+          fileModel.noPreview = true
         }
       }
     },
@@ -120,9 +121,68 @@ module.exports = (sequelize, DataTypes) => {
     return path.join(config.storage.filesDirectory, this.hash)
   }
 
+  File.prototype.getPreviewPath = function () {
+    return this.noPreview ? undefined : path.join(config.storage.previewsDirectory, this.hash)
+  }
+
   // all media files have a width
   File.prototype.isMedia = function () {
     return !!this.width
+  }
+
+  File.prototype.getFFArgs = function () {
+    return new Promise(async (resolve, reject) => {
+      const inputPath = this.getPath()
+
+      try {
+        let newDimensions = 'scale=100:100:flags=neighbor:force_original_aspect_ratio=increase,crop=100:100'
+
+        // base args, always used
+        let args = ['-v', 'error', '-y']
+
+        if (this.isAnimated) { // an animation?
+          args.push(
+            '-ss', '0',
+            '-t', '7',
+            '-i', inputPath,
+            '-c:v', 'libvpx',
+            '-b:v', '200K',
+            '-crf', '12',
+            '-an',
+            '-f', 'webm',
+            '-vf', newDimensions,
+            '-auto-alt-ref', '0'
+          )
+        } else if (this.isMedia()) { // an image?
+          args.push(
+            '-i', inputPath,
+            '-f', 'image2',
+            '-vcodec', 'png',
+            '-vf', newDimensions
+          )
+        } else {
+          if (!this.isText) { // binary file
+            throw new Error(`Cannot create preview for binary file.`)
+          } else { // text file
+            const relativeFilePath = path.relative(process.cwd(), inputPath).replace(/\\/g, '/') // ffmpeg doesn't like Windows drive letters
+            const textFilter = `drawtext=textfile=${relativeFilePath}:fontcolor=#a6d627:fontfile=${ffFontFile}:fontsize=12:x=4:y=4:`
+
+            args.push(
+              '-i', textPreviewBackground,
+              '-vf', textFilter,
+              '-f', 'image2',
+              '-vcodec', 'png'
+            )
+          }
+        }
+
+        args.push(this.getPreviewPath())
+
+        resolve(args)
+      } catch (error) {
+        reject(error)
+      }
+    })
   }
 
   return File

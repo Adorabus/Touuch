@@ -2,7 +2,7 @@
   .file(:style='`border: 1px solid ${extColor}`')
     .preview
       a(:href='`/api/files/${upload.url}`')
-        img(v-if='!upload.animated', :src='`/api/files/${upload.url}/preview`', draggable='false')
+        img(v-if='!upload.isAnimated', :src='`/api/files/${upload.url}/preview`', draggable='false')
         video(v-else, :src='`/api/files/${upload.url}/preview`', autoplay, loop, muted)
     .name(:title='upload.filename') {{ upload.filename }}
 </template>
