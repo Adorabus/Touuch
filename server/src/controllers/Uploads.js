@@ -2,7 +2,7 @@ const fs = require('mz/fs')
 const path = require('path')
 const blake2 = require('blake2')
 const config = require('../config')
-const {File, Url} = require('../models')
+const {sequelize, File, Url} = require('../models')
 const {randomInt} = require('../util/math')
 const {urlChars, urlKeyLength} = config.touuch
 
@@ -106,20 +106,33 @@ function createFile (file) {
 module.exports = {
   async index (req, res) {
     try {
-      const urls = await Url.findAll({
-        where: {
-          ownerId: req.user.id
-        },
-        attributes: ['filename', 'url', 'createdAt', 'animated'],
-        limit: parseInt(req.query.limit) || 25,
-        offset: parseInt(req.query.offset) || 0,
-        order: [
-          ['createdAt', 'DESC']
-        ]
+      const urls = await sequelize.query(`
+        SELECT urls.filename, urls.url, urls.createdAt, files.animated
+        FROM urls
+        INNER JOIN files ON urls.fileId=files.id
+        WHERE urls.ownerId = :ownerId
+        ORDER BY urls.createdAt DESC
+        LIMIT :limit
+        OFFSET :offset;
+      `, {
+        type: sequelize.QueryTypes.SELECT,
+        mapToModel: true,
+        replacements: {
+          ownerId: req.user.id,
+          limit: parseInt(req.query.limit) || 25,
+          offset: parseInt(req.query.offset) || 0,
+          model: Url
+        }
       })
+
+      // convert the joined column to boolean
+      for (let i = 0, len = urls.length; i < len; i++) {
+        urls[i].animated = !!urls[i].animated
+      }
 
       res.send(urls)
     } catch (error) {
+      console.error(error)
       res.status(500).send({
         error: 'Failed to index files.'
       })
@@ -191,7 +204,7 @@ module.exports = {
 
       res.sendFile(urlModel.file.getPath(), {
         headers: {
-          'Content-Type': urlModel.file.fileType.mimeType,
+          'Content-Type': urlModel.getMimeType(),
           'Content-Disposition': `inline; filename=${urlModel.filename}`
         }
       })
