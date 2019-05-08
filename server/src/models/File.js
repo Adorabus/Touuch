@@ -135,7 +135,10 @@ module.exports = (sequelize, DataTypes) => {
       const inputPath = this.getPath()
 
       try {
-        let newDimensions = 'scale=100:100:flags=neighbor:force_original_aspect_ratio=increase,crop=100:100'
+        const tiny = this.width < 100 || this.height < 100
+        const neighbor = tiny ? ':flags=neighbor' : ''
+
+        let newDimensions = `scale=100:100${neighbor}:force_original_aspect_ratio=increase,crop=100:100`
 
         // base args, always used
         let args = ['-v', 'error', '-y']
