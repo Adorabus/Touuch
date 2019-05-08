@@ -227,8 +227,8 @@ module.exports = {
       if (previewPath) {
         res.sendFile(previewPath, {
           headers: {
-            'Content-Type': urlModel.isAnimated ? 'video/webm' : 'image/png',
-            'Content-Disposition': `inline; filename=${urlModel.url}.${urlModel.isAnimated ? 'webm' : 'png'}`
+            'Content-Type': urlModel.file.isAnimated ? 'video/webm' : 'image/png',
+            'Content-Disposition': `inline; filename=${urlModel.url}.${urlModel.file.isAnimated ? 'webm' : 'png'}`
           }
         })
       } else {
