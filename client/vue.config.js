@@ -14,7 +14,10 @@ module.exports = {
   css: {
     loaderOptions: {
       sass: {
-        data: `@import "@/style/_mixins.scss";`
+        data: `
+        @import '@/style/_mixins.scss';
+        @import '@/style/_global.scss';
+        `
       }
     }
   }

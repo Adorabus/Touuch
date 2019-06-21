@@ -1,23 +1,14 @@
 <template lang="pug">
   .dropdown
-    .dropdown-button(@click='isCollapsed = !isCollapsed')
+    .dropdown-button(@click='isDropped = !isDropped')
       slot(name='button')
-    .dropdown-content(:class='classObj')
-      slot(name='content')
+    transition(name='dropdown')
+      .dropdown-content(v-if='isDropped', :class='[align]')
+        slot(name='content')
 </template>
 
 <script>
 export default {
-  computed: {
-    classObj () {
-      const obj = {
-        collapsed: this.isCollapsed
-      }
-      obj[this.align] = true
-
-      return obj
-    }
-  },
   props: {
     align: {
       type: String,
@@ -27,7 +18,7 @@ export default {
   },
   data () {
     return {
-      isCollapsed: true
+      isDropped: false
     }
   }
 }
@@ -60,7 +51,20 @@ export default {
   right: 0;
 }
 
-.dropdown-content.collapsed {
-  display: none;
+.dropdown-enter-active {
+  animation: dropdown-mask .1s;
+}
+
+.dropdown-leave-active {
+  animation: dropdown-mask .1s reverse;
+}
+
+@keyframes dropdown-mask {
+  0% {
+    clip-path: inset(0 0 100% 0)
+  }
+  100% {
+    clip-path: inset(0 0 0 0)
+  }
 }
 </style>

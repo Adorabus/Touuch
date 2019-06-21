@@ -9,17 +9,34 @@
         dropdown.account-dropdown
           template(v-slot:button)
             span#settings-emoji ⚙
-          template(v-slot:content) Hello!
+          template(v-slot:content)
+            link-list#account-links(:links='navLinks')
     #view-container
       router-view
 </template>
 
 <script>
 import Dropdown from '@/components/common/Dropdown'
+import LinkList from '@/components/common/LinkList'
 
 export default {
   components: {
-    Dropdown
+    Dropdown,
+    LinkList
+  },
+  computed: {
+    navLinks () {
+      return [
+        {
+          title: 'Thing',
+          url: '/stuff'
+        },
+        {
+          title: 'Other Thing',
+          url: '/otherstuff'
+        }
+      ]
+    }
   }
 }
 </script>
@@ -29,7 +46,7 @@ export default {
 html, body {
   margin: 0;
   padding: 0;
-  background: #23282b;
+  background: $app-background;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -46,16 +63,17 @@ html, body {
   width: 100%;
   height: 60px;
   outline: 1px solid #0f1113;
-  border-bottom: 1px solid #30363a;
+  border-bottom: $border-style;
   margin-bottom: 30px;
+}
 
+#nav-left {
   a {
     padding-left: 22px;
     padding-right: 22px;
     line-height: 60px;
     font-weight: bold;
-    color: #f02a55;
-    border-right: 1px solid #30363a;
+    border-right: $border-style;
     display: inline-block;
 
     &.router-link-exact-active {
@@ -64,9 +82,12 @@ html, body {
     }
   }
 }
+
 a {
+  color: #f02a55;
   text-decoration: none;
 }
+
 input[type=text], input[type=password] {
   color: #fff;
   background: #181818;
@@ -94,5 +115,9 @@ input[type=text], input[type=password] {
 #settings-emoji {
   font-size: 32pt;
   line-height: 60px;
+}
+
+#account-links {
+  width: 200px;
 }
 </style>
