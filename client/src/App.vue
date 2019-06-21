@@ -1,13 +1,28 @@
 <template lang="pug">
   #app
     #nav
-      router-link(to='/') Home
-      router-link(to='/files') Files
-      router-link(to='/login') Login (temp)
-      span(v-if='$store.state.isLoggedIn') {{ this.$store.state.user.username }}
+      #nav-left
+        router-link(to='/') Home
+        router-link(to='/files') Files
+        span(v-if='$store.state.isLoggedIn') {{ this.$store.state.user.username }}
+      #nav-right
+        dropdown.account-dropdown
+          template(v-slot:button)
+            span#settings-emoji ⚙
+          template(v-slot:content) Hello!
     #view-container
       router-view
 </template>
+
+<script>
+import Dropdown from '@/components/common/Dropdown'
+
+export default {
+  components: {
+    Dropdown
+  }
+}
+</script>
 
 <style lang="scss">
 /* TODO: Maybe move global stuff into separate file. */
@@ -25,7 +40,10 @@ html, body {
 }
 #nav {
   @include select(none);
+  display: flex;
+  justify-content: space-between;
   text-align: left;
+  width: 100%;
   height: 60px;
   outline: 1px solid #0f1113;
   border-bottom: 1px solid #30363a;
@@ -66,5 +84,15 @@ input[type=text], input[type=password] {
 #view-container {
   display: flex;
   justify-content: center;
+}
+
+.account-dropdown {
+  width: 60px;
+  height: 100%;
+}
+
+#settings-emoji {
+  font-size: 32pt;
+  line-height: 60px;
 }
 </style>
