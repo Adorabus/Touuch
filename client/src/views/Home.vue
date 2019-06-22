@@ -1,8 +1,8 @@
 <template lang="pug">
   div(v-if='!$store.state.isLoggedIn')
-    input(type='text', v-model='username', @keydown.enter.prevent='submit', autofocus)
+    input(type='text', v-model='username', placeholder='username', @keydown.enter.prevent='submit', autofocus)
     br
-    input(type='password', v-model='password', @keydown.enter.prevent='submit')
+    input(type='password', v-model='password', placeholder='password', @keydown.enter.prevent='submit')
     p {{ result }}
   div(v-else)
     p Welcome, {{ $store.state.user.username }}

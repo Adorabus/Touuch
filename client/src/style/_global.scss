@@ -1,2 +1,9 @@
 $app-background: #23282b;
 $border-style: 1px solid #30363a;
+
+.fill-parent {
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}

@@ -1,7 +1,7 @@
 <template lang="pug">
   ul.link-list
     li.link-list-item(v-for='link in links')
-      router-link(:to='link.url') {{ link.title }}
+      router-link.fill-parent(:to='link.url') {{ link.title }}
 </template>
 
 <script>

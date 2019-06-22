@@ -3,14 +3,14 @@
     #nav
       #nav-left
         router-link(to='/') Home
-        router-link(to='/files') Files
-        span(v-if='$store.state.isLoggedIn') {{ this.$store.state.user.username }}
+        router-link(to='/files', v-if='$store.state.isLoggedIn') Files
       #nav-right
-        dropdown.account-dropdown
+        dropdown.account-dropdown(v-if='$store.state.isLoggedIn')
           template(v-slot:button)
             span#settings-emoji ⚙
           template(v-slot:content)
-            link-list#account-links(:links='navLinks')
+            #account-links
+              a(@click='logout') Logout
     #view-container
       router-view
 </template>
@@ -36,6 +36,13 @@ export default {
           url: '/otherstuff'
         }
       ]
+    }
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('setToken', null)
+      this.$store.dispatch('setUser', null)
+      this.$router.push('/')
     }
   }
 }
@@ -118,6 +125,12 @@ input[type=text], input[type=password] {
 }
 
 #account-links {
+  text-align: center;
+  border: $border-style;
+  border-top: none;
+  box-shadow: 0 1px 0 0 black;
+  background: $app-background;
   width: 200px;
+  padding: 10px;
 }
 </style>
