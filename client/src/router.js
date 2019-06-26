@@ -14,9 +14,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/huh',
-      name: 'huh',
-      component: () => import('./views/Huh.vue')
+      path: '/profile',
+      name: 'profile',
+      component: () => import('./views/Profile.vue')
     },
     {
       path: '/login',

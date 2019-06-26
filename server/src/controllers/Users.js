@@ -1,5 +1,6 @@
 const {Sequelize, User, LoginAttempt} = require('../models')
 const Op = Sequelize.Op
+const async = require('async')
 
 module.exports = {
   async register (req, res) {
@@ -165,6 +166,28 @@ module.exports = {
       res.send({
         user: req.user.loggedIn()
       })
+    } catch (error) {
+      res.status(500).send({
+        error: 'Failed to retrieve own info.'
+      })
+    }
+  },
+  async getSelfDetails (req, res) {
+    try {
+      const output = {
+        user: req.user.loggedIn()
+      }
+
+      await async.parallel([
+        async () => {
+          output.totalBytes = await req.user.getTotalBytes()
+        },
+        async () => {
+          output.totalFiles = await req.user.getTotalFiles()
+        }
+      ])
+
+      res.send(output)
     } catch (error) {
       res.status(500).send({
         error: 'Failed to retrieve own info.'

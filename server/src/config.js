@@ -17,7 +17,6 @@ const config = {
     options: {
       dialect: process.env.DB_DIALECT || 'mysql',
       host: process.env.DB_HOST || 'localhost',
-      operatorsAliases: false,
       logging: false
     }
   },

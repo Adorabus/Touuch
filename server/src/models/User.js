@@ -72,6 +72,31 @@ module.exports = (sequelize, DataTypes) => {
     return omit(userToSend, ['password', 'userkey', 'twoFactorSecret'])
   }
 
+  User.prototype.getTotalFiles = function () {
+    return this.sequelize.models.Url.count({
+      where: {
+        deletedAt: null
+      }
+    })
+  }
+
+  User.prototype.getTotalBytes = async function () {
+    const result = await this.sequelize.query(`
+      SELECT SUM(files.size)
+      FROM files
+      INNER JOIN urls ON urls.fileId=files.id
+      WHERE urls.ownerId = :ownerId AND urls.deletedAt IS NULL;
+    `, {
+      type: sequelize.QueryTypes.SELECT,
+      plain: true,
+      replacements: {
+        ownerId: this.id
+      }
+    })
+
+    return parseInt(Object.values(result)[0])
+  }
+
   User.prototype.isRoot = function () {
     return this.id === 1
   }

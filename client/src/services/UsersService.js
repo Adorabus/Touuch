@@ -23,3 +23,7 @@ export function remove2FA (username) {
 export function getSelf () {
   return Api().get('users/me')
 }
+
+export function getSelfDetails () {
+  return Api().get('users/me/details')
+}

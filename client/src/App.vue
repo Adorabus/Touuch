@@ -10,6 +10,7 @@
             span#settings-emoji ⚙
           template(v-slot:content)
             #account-links
+              router-link(to='/profile') Profile
               a(@click='logout') Logout
     #view-container
       router-view
@@ -23,20 +24,6 @@ export default {
   components: {
     Dropdown,
     LinkList
-  },
-  computed: {
-    navLinks () {
-      return [
-        {
-          title: 'Thing',
-          url: '/stuff'
-        },
-        {
-          title: 'Other Thing',
-          url: '/otherstuff'
-        }
-      ]
-    }
   },
   methods: {
     logout () {
@@ -130,7 +117,12 @@ input[type=text], input[type=password] {
   border-top: none;
   box-shadow: 0 1px 0 0 black;
   background: $app-background;
-  width: 200px;
+  width: 150px;
   padding: 10px;
+
+  * {
+    display: block;
+    line-height: 30px;
+  }
 }
 </style>

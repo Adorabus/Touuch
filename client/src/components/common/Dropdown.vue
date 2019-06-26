@@ -1,5 +1,5 @@
 <template lang="pug">
-  .dropdown
+  .dropdown(v-click-outside='hide')
     .dropdown-button(@click='isDropped = !isDropped')
       slot(name='button')
     transition(name='dropdown')
@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import ClickOutside from 'vue-click-outside'
+
 export default {
   props: {
     align: {
@@ -16,10 +18,18 @@ export default {
       validator: (val) => ['left', 'right'].includes(val)
     }
   },
+  methods: {
+    hide () {
+      this.isDropped = false
+    }
+  },
   data () {
     return {
       isDropped: false
     }
+  },
+  directives: {
+    ClickOutside
   }
 }
 </script>

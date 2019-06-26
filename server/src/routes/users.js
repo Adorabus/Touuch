@@ -20,6 +20,12 @@ module.exports = {
       UsersController.getSelf
     ]
   },
+  '/me/details': {
+    get: [
+      LoggedIn.isLoggedIn,
+      UsersController.getSelfDetails
+    ]
+  },
   '/:username': {
     get: [
       LoggedIn.isAdministrator,
