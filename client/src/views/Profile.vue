@@ -1,10 +1,11 @@
 <template lang="pug">
   div
-    h1 {{ $store.state.user.username }}
-    h3 Storage Used
-    span {{ totalStorage }}
-    h3 Total Files
-    span {{ me.totalFiles }}
+    h1 {{ username }}
+    div(v-if='me.totalFiles')
+      h3 Storage Used
+      span {{ totalStorage }}
+      h3 Total Files
+      span {{ me.totalFiles }}
 </template>
 
 <script>
@@ -13,6 +14,15 @@ import prettyBytes from 'pretty-bytes'
 
 export default {
   computed: {
+    username () {
+      let name = this.$store.state.user.username
+
+      if (this.$store.state.user.admin) {
+        name += ' [A]'
+      }
+
+      return name
+    },
     totalStorage () {
       if (!this.me.totalBytes) return 'Unknown'
       return prettyBytes(this.me.totalBytes)
