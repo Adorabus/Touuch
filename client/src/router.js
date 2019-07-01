@@ -16,17 +16,26 @@ export default new Router({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('./views/Profile.vue')
+      component: () => import('./views/Profile.vue'),
+      meta: {
+        title: 'Profile'
+      }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login.vue')
+      component: () => import('./views/Login.vue'),
+      meta: {
+        title: 'Login'
+      }
     },
     {
       path: '/files',
       name: 'files',
-      component: () => import('./views/Files.vue')
+      component: () => import('./views/Files.vue'),
+      meta: {
+        title: 'Files'
+      }
     }
   ]
 })
