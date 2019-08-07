@@ -4,6 +4,12 @@ export function register (credentials) {
   return Api().post('users', credentials)
 }
 
+/*
+export function register (email) {
+  return Api().post('registrations', email)
+}
+*/
+
 export function getUser (username) {
   return Api().get(`users/${username}`)
 }

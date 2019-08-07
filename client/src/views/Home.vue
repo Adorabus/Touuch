@@ -3,6 +3,8 @@
     input(type='text', v-model='username', placeholder='username', @keydown.enter.prevent='submit', autofocus)
     br
     input(type='password', v-model='password', placeholder='password', @keydown.enter.prevent='submit')
+    br
+    button(@click='submit') Log In
     p {{ result }}
   div(v-else)
     p Welcome, {{ $store.state.user.username }}
@@ -34,7 +36,8 @@ export default {
         this.username = ''
         this.password = ''
       } catch (error) {
-        console.error(error)
+        console.error(error.response.data.error)
+        this.result = error.response.data.error
       }
     }
   }

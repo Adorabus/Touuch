@@ -1,8 +1,15 @@
+// NOT USED
+
 <template lang="pug">
   div
-    input(type='text', v-model='username', @keydown.enter.prevent='submit', autofocus)
+    input(
+      type='text', v-model='username', @keydown.enter.prevent='submit', autofocus
+      autocomplete='off', autocorrect='off', autocapitalize='off', spellcheck='false'
+    )
     br
     input(type='password', v-model='password', @keydown.enter.prevent='submit')
+    br
+    button(@click='submit') Log In
     p {{ result }}
 </template>
 

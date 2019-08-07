@@ -18,6 +18,10 @@ export default {
           url: 'users'
         },
         {
+          title: 'Secret',
+          url: 'secret'
+        },
+        {
           title: 'Server Maintenance',
           url: 'maintenance'
         }

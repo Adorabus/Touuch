@@ -22,6 +22,7 @@ export default new Router({
         forUsers: true
       }
     },
+    /*
     {
       path: '/login',
       name: 'login',
@@ -31,6 +32,7 @@ export default new Router({
         forGuests: true
       }
     },
+    */
     {
       path: '/files',
       name: 'files',
@@ -60,6 +62,10 @@ export default new Router({
         {
           path: 'maintenance',
           component: () => import('./views/admin/Maintenance')
+        },
+        {
+          path: 'secret',
+          component: () => import('./views/admin/Secret')
         }
       ]
     }

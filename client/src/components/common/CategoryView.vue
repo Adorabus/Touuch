@@ -2,7 +2,7 @@
   .category-menu
     nav.list.floating-box
       router-link.category(v-for='category, key in categories', :to='category.url', :key='key') {{ category.title }}
-    .view.center-content.floating-box
+    .view.center-content
       router-view
 </template>
 

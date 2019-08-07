@@ -83,6 +83,28 @@ a {
   text-decoration: none;
 }
 
+hr {
+  border: none;
+  border-bottom: 1px solid $border-color;
+}
+
+button {
+  color: $link-color;
+  background: #181818;
+  border: 1px solid #222;
+  padding: 8px;
+  margin: 5px;
+  font-size: 10pt;
+  font-weight: bold;
+  outline: none;
+  box-shadow: $shadow-style;
+
+  &:active {
+    transform: translate(0, 1px);
+    box-shadow: $shadow-style-low;
+  }
+}
+
 input[type=text], input[type=password] {
   color: #fff;
   background: #181818;
