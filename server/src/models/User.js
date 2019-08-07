@@ -75,6 +75,7 @@ module.exports = (sequelize, DataTypes) => {
   User.prototype.getTotalFiles = function () {
     return this.sequelize.models.Url.count({
       where: {
+        ownerId: this.id,
         deletedAt: null
       }
     })
