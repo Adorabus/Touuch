@@ -79,7 +79,7 @@ html, body {
 }
 
 a {
-  color: #f02a55;
+  color: $link-color;
   text-decoration: none;
 }
 

@@ -35,9 +35,16 @@ export default {
       line-height: 40px;
       border-bottom: $border-style;
       padding: 5px;
+      border-right: 3px solid transparent;
 
       &:last-child {
-        border: none;
+        border-bottom: none;
+      }
+
+      &.router-link-active {
+        color: unset;
+        border-right: 3px solid $link-color;
+        cursor: default;
       }
     }
   }
