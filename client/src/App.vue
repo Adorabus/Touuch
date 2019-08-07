@@ -4,6 +4,7 @@
       #nav-left
         router-link(to='/') Home
         router-link(to='/files', v-if='$store.state.isLoggedIn') Files
+        router-link(to='/administration', v-if='$store.state.isAdmin') Administration
       #nav-right
         dropdown.account-dropdown(v-if='$store.state.isLoggedIn')
           template(v-slot:button)

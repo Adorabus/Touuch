@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Home from './views/Home'
 
 Vue.use(Router)
 
@@ -16,26 +16,52 @@ export default new Router({
     {
       path: '/profile',
       name: 'profile',
-      component: () => import('./views/Profile.vue'),
+      component: () => import('./views/Profile'),
       meta: {
-        title: 'Profile'
+        title: 'Profile',
+        forUsers: true
       }
     },
     {
       path: '/login',
       name: 'login',
-      component: () => import('./views/Login.vue'),
+      component: () => import('./views/Login'),
       meta: {
-        title: 'Login'
+        title: 'Login',
+        forGuests: true
       }
     },
     {
       path: '/files',
       name: 'files',
-      component: () => import('./views/Files.vue'),
+      component: () => import('./views/Files'),
       meta: {
-        title: 'Files'
+        title: 'Files',
+        forUsers: true
       }
+    },
+    {
+      path: '/administration',
+      redirect: '/administration/users'
+    },
+    {
+      path: '/administration',
+      name: 'administration',
+      component: () => import('./views/Administration'),
+      meta: {
+        title: 'Administration',
+        forAdministrators: true
+      },
+      children: [
+        {
+          path: 'users',
+          component: () => import('./views/admin/Users')
+        },
+        {
+          path: 'maintenance',
+          component: () => import('./views/admin/Maintenance')
+        }
+      ]
     }
   ]
 })

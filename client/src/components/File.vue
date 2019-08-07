@@ -1,7 +1,11 @@
 <template lang="pug">
-  .file(:style='`border: 1px solid ${extColor}`', :class='{selected}')
+  .file(
+    :style='`border: 1px solid ${extColor}`',
+    :class='{selected, "selection-mode": selectionMode}'
+  )
     .preview
       button.select(@click='toggleSelect')
+      .select-overlay(v-if='selectionMode', @click='toggleSelect', :class='{selected}')
       a(:href='`/api/files/${upload.url}`')
         img(v-if='!upload.isAnimated', :src='`/api/files/${upload.url}/preview`', draggable='false')
         video(v-else, :src='`/api/files/${upload.url}/preview`', autoplay, loop, muted)
@@ -18,7 +22,7 @@ const extColors = {
 }
 
 export default {
-  props: ['upload'],
+  props: ['upload', 'selectionMode'],
   computed: {
     extColor () {
       const [ext] = this.upload.filename.toLowerCase().split('.').slice(-1)
@@ -59,11 +63,16 @@ export default {
   margin-top: unset;
   position: relative;
 
-  &.selected {
-    outline: 1px solid white;
+  .preview {
   }
 
-  .preview {
+  .select-overlay {
+    cursor: pointer;
+  }
+
+  .select-overlay.selected {
+    outline: 1px solid white;
+    background: rgba(255, 255, 255, 0.25);
   }
 
   button.select {
@@ -83,12 +92,26 @@ export default {
     outline: none;
   }
 
+  .select-overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    z-index: 1;
+  }
+
   &:hover button.select {
     display: inline-block;
   }
 
   &.selected button.select {
     background: white;
+  }
+
+  &.selection-mode button.select {
+    display: inline-block;
   }
 
   .name {

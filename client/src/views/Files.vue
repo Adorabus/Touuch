@@ -6,7 +6,8 @@
       file(
         v-for='upload in uploads',
         :upload='upload', :key='upload.url',
-        @select='fileSelected', @deselect='fileDeselected'
+        @select='fileSelected', @deselect='fileDeselected',
+        :selectionMode='selected.length > 0'
       )
 </template>
 
