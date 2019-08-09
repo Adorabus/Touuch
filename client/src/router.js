@@ -43,6 +43,15 @@ export default new Router({
       }
     },
     {
+      path: '/patch-notes',
+      name: 'patch-notes',
+      component: () => import('./views/PatchNotes'),
+      meta: {
+        title: 'Patch Notes',
+        forUsers: true
+      }
+    },
+    {
       path: '/administration',
       redirect: '/administration/users'
     },

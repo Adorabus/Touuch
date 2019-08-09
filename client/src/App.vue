@@ -2,8 +2,10 @@
   #app
     #nav
       #nav-left
-        router-link(to='/') Home
+        router-link(to='/')
+          img(src='logo.png')
         router-link(to='/files', v-if='$store.state.isLoggedIn') Files
+        router-link(to='/patch-notes', v-if='$store.state.isLoggedIn') Patch Notes
         router-link(to='/administration', v-if='$store.state.isAdmin') Administration
       #nav-right
         dropdown.account-dropdown(v-if='$store.state.isLoggedIn')
@@ -63,13 +65,22 @@ html, body {
 }
 
 #nav-left {
+  display: flex;
+  flex-direction: row;
+
   a {
     padding-left: 22px;
     padding-right: 22px;
     line-height: 60px;
     font-weight: bold;
-    border-right: $border-style;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+
+    img {
+      display: inline-block;
+    }
 
     &.router-link-exact-active {
       text-decoration: underline;
