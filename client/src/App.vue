@@ -69,8 +69,8 @@ html, body {
   flex-direction: row;
 
   a {
-    padding-left: 22px;
-    padding-right: 22px;
+    padding-left: 20px;
+    padding-right: 20px;
     line-height: 60px;
     font-weight: bold;
     display: inline-flex;
@@ -82,9 +82,9 @@ html, body {
       display: inline-block;
     }
 
-    &.router-link-exact-active {
-      text-decoration: underline;
+    &.router-link-active {
       cursor: default;
+      color: unset;
     }
   }
 }
