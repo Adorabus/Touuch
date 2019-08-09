@@ -1,13 +1,17 @@
 <template lang="pug">
   #files
-    #files-controls-container
-      #files-controls(v-if='selected.length > 0') {{ selected.length }} file(s) selected.
+    #files-controls.floating-box(v-if='numSelected > 0')
+      .info
+        span {{ numSelected }} file(s) selected.
+      .controls
+        button Delete
+        button.cancel(@click='cancelSelection') Cancel
     #files-list
       file(
-        v-for='upload in uploads',
+        v-for='upload in uploads', :selected='upload.selected',
         :upload='upload', :key='upload.url',
         @select='fileSelected', @deselect='fileDeselected',
-        :selectionMode='selected.length > 0'
+        :selectionMode='numSelected > 0'
       )
 </template>
 
@@ -21,17 +25,24 @@ export default {
   },
   methods: {
     fileSelected (url) {
-      this.selected.push(url)
+      if (!this.uploads[url].selected) this.numSelected++
+      this.uploads[url].selected = true
     },
     fileDeselected (url) {
-      this.selected = this.selected.filter(item => item !== url)
+      if (this.uploads[url].selected) this.numSelected--
+      this.uploads[url].selected = false
+    },
+    cancelSelection () {
+      for (const upload of Object.values(this.uploads)) {
+        upload.selected = false
+      }
+      this.numSelected = 0
     }
   },
   data () {
     return {
-      uploads: [],
-      selected: [],
-      selecting: false
+      uploads: {},
+      numSelected: 0
     }
   },
   async mounted () {
@@ -39,7 +50,13 @@ export default {
       const res = await indexFiles({
         limit: 100
       })
-      this.uploads = res.data
+
+      const uploads = {}
+      for (const upload of res.data) {
+        uploads[upload.url] = upload
+      }
+
+      this.uploads = uploads
     } catch (error) {
       console.error(error)
     }
@@ -57,19 +74,25 @@ export default {
 
 #files-list {
   width: 80%;
-}
-
-#files-controls-container {
-  height: 30px;
-  width: 100%;
-  margin-bottom: 20px;
+  padding-top: 20px;
 }
 
 #files-controls {
   display: flex;
+  flex-direction: column;
   align-items: center;
   text-align: center;
   justify-content: center;
-  border-bottom: $border-style;
+
+  .info {
+    border-bottom: $border-style;
+    padding: 5px;
+  }
+
+  .controls {
+    button.cancel {
+      color: grey;
+    }
+  }
 }
 </style>

@@ -22,25 +22,18 @@ const extColors = {
 }
 
 export default {
-  props: ['upload', 'selectionMode'],
+  props: ['upload', 'selectionMode', 'selected'],
   computed: {
     extColor () {
       const [ext] = this.upload.filename.toLowerCase().split('.').slice(-1)
       return extColors[ext] || 'rgba(255, 255, 255, 1)'
     }
   },
-  data () {
-    return {
-      selected: false
-    }
-  },
   methods: {
     toggleSelect () {
       if (this.selected) {
-        this.selected = false
         this.$emit('deselect', this.upload.url)
       } else {
-        this.selected = true
         this.$emit('select', this.upload.url)
       }
     }
