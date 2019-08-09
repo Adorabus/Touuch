@@ -3,10 +3,14 @@
     h3 Register User
     input(
       type='text', v-model='registerUsername', autocomplete='off', autocorrect='off',
-      autocapitalize='off', spellcheck='false', @keydown.enter.prevent='registerUser'
+      autocapitalize='off', spellcheck='false', @keydown.enter.prevent='registerUser',
+      data-lpignore='true'
     )
     br
-    input(type='password', v-model='registerPassword', @keydown.enter.prevent='registerUser')
+    input(
+      type='password', v-model='registerPassword',
+      @keydown.enter.prevent='registerUser', data-lpignore='true'
+    )
     br
     button(@click='registerUser') Register
     hr
