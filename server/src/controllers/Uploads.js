@@ -247,7 +247,7 @@ module.exports = {
     const failed = []
 
     await async.each(
-      req.body.urls,
+      req.query.urls,
       async (url) => {
         const urlModel = await Url.findOne({
           where: {url}

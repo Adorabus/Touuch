@@ -4,7 +4,7 @@
       .info
         span {{ numSelected }} file(s) selected.
       .controls
-        button Delete
+        button(@click='deleteSelected') Delete
         button.cancel(@click='cancelSelection') Cancel
     #files-list
       file(
@@ -17,7 +17,7 @@
 
 <script>
 import File from '@/components/File'
-import {indexFiles} from '@/services/FilesService.js'
+import {indexFiles, removeFiles} from '@/services/FilesService.js'
 
 export default {
   components: {
@@ -37,6 +37,19 @@ export default {
         upload.selected = false
       }
       this.numSelected = 0
+    },
+    async deleteSelected () {
+      try {
+        const selectedUrls = Object.values(this.uploads)
+          .filter(upload => upload.selected)
+          .map(upload => upload.url)
+
+        console.log(`Deleting [${selectedUrls.join(', ')}]`)
+        const res = await removeFiles(selectedUrls)
+        console.log(res.data)
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
   data () {
