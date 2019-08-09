@@ -16,6 +16,10 @@ module.exports = {
     get: [
       LoggedIn.isLoggedIn,
       Uploads.index
+    ],
+    delete: [
+      LoggedIn.isLoggedIn,
+      Uploads.remove
     ]
   },
   '/hash': {
@@ -33,10 +37,6 @@ module.exports = {
   '/:url': {
     get: [
       Uploads.view
-    ],
-    delete: [
-      LoggedIn.isLoggedIn,
-      Uploads.remove
     ]
   }
 }

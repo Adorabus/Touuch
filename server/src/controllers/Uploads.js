@@ -5,6 +5,7 @@ const config = require('../config')
 const {sequelize, File, Url} = require('../models')
 const {randomInt} = require('../util/math')
 const {urlChars, urlKeyLength} = config.touuch
+const async = require('async')
 
 function hashFile (path) {
   return new Promise((resolve, reject) => {
@@ -111,6 +112,7 @@ module.exports = {
         FROM urls
         INNER JOIN files ON urls.fileId=files.id
         WHERE urls.ownerId = :ownerId
+        AND urls.deletedAt IS NULL
         ORDER BY urls.createdAt DESC
         LIMIT :limit
         OFFSET :offset;
@@ -241,35 +243,41 @@ module.exports = {
     }
   },
   async remove (req, res) {
-    try {
-      const urlModel = await Url.findOne({
-        where: {
-          url: req.params.url
-        }
-      })
+    const deleted = []
+    const failed = []
 
-      if (req.user.id !== urlModel.ownerId) {
-        return res.status(403).send({
-          error: 'You do not have permission to remove this file.'
+    await async.each(
+      req.body.urls,
+      async (url) => {
+        const urlModel = await Url.findOne({
+          where: {url}
         })
+
+        if (req.user.id !== urlModel.ownerId) {
+          failed.push(url)
+          return
+        }
+
+        const fileModel = urlModel.file
+        await urlModel.destroy()
+
+        deleted.push(url)
+
+        const remainingUrls = await fileModel.getUrls()
+        if (remainingUrls.length === 0) {
+          fs.unlink(fileModel.getPath())
+          fileModel.destroy()
+        }
+      },
+      (err) => {
+        if (err) {
+          res.status(500).send({
+            error: 'Failed to delete files.'
+          })
+        } else {
+          res.send({deleted, failed})
+        }
       }
-
-      const fileModel = urlModel.file
-      await urlModel.destroy()
-
-      res.send({
-        message: `Deleted ${req.params.url}.`
-      })
-
-      const remainingUrls = await fileModel.getUrls()
-      if (remainingUrls.length === 0) {
-        fs.unlink(fileModel.getPath())
-        fileModel.destroy()
-      }
-    } catch (error) {
-      res.status(404).send({
-        error: 'Requested file does not exist.'
-      })
-    }
+    )
   }
 }
