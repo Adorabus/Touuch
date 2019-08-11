@@ -116,7 +116,7 @@ button {
   }
 }
 
-input[type=text], input[type=password] {
+input[type=text], input[type=password], input[type=number] {
   color: #fff;
   background: #181818;
   border: 1px solid #222;
