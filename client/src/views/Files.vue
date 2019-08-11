@@ -13,15 +13,18 @@
         @select='fileSelected', @deselect='fileDeselected',
         :selectionMode='numSelected > 0'
       )
+    page-switcher(:total='30')
 </template>
 
 <script>
 import File from '@/components/File'
+import PageSwitcher from '@/components/common/PageSwitcher'
 import {indexFiles, removeFiles} from '@/services/FilesService.js'
 
 export default {
   components: {
-    File
+    File,
+    PageSwitcher
   },
   methods: {
     fileSelected (url) {
