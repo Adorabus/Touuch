@@ -8,6 +8,8 @@ const errorMessages = {
   filename: 'Invalid file name.',
   originalname: 'Invalid file name.',
   hash: 'Invalid hash.',
+  fileLimit: 'Invalid file display limit. (positive integers only)',
+  fileOffset: 'Invalid file display offset. (positive integers only)',
   default: 'Bad input.'
 }
 
@@ -16,7 +18,9 @@ const schemas = {
   password: Joi.string().regex(/^[\x20-\x7E]{8,16}$/),
   twoFactorToken: Joi.string().allow(''),
   filename: Joi.string().regex(/^[\w,\s-.]{1,255}$/),
-  hash: Joi.string().hex()
+  hash: Joi.string().hex(),
+  fileLimit: Joi.number().min(1).max(500).integer(),
+  fileOffset: Joi.number().positive().integer()
 }
 
 function verifyInput (req, res, next, schema, options = {}) {

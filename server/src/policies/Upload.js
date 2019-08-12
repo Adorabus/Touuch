@@ -8,6 +8,12 @@ module.exports = {
       filename: schemas.filename.required()
     })
   },
+  index (req, res, next) {
+    verifyInput(req, res, next, {
+      limit: schemas.fileLimit,
+      offset: schemas.fileOffset
+    })
+  },
   file (req, res, next) {
     // make sure the request included a file
     if (!req.file) {

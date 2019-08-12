@@ -15,6 +15,7 @@ module.exports = {
     ],
     get: [
       LoggedIn.isLoggedIn,
+      UploadPolicy.index,
       Uploads.index
     ],
     delete: [
