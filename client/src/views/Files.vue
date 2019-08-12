@@ -13,7 +13,7 @@
         @select='fileSelected', @deselect='fileDeselected',
         :selectionMode='numSelected > 0'
       )
-    page-switcher(:total='30')
+    page-switcher(:total='30', @change='pageChanged')
 </template>
 
 <script>
@@ -27,6 +27,9 @@ export default {
     PageSwitcher
   },
   methods: {
+    async pageChanged (newPage) {
+      await this.getUploads(newPage)
+    },
     fileSelected (url) {
       if (!this.uploads[url].selected) this.numSelected++
       this.uploads[url].selected = true
@@ -53,6 +56,23 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+    async getUploads (page) {
+      try {
+        const res = await indexFiles({
+          limit: 100,
+          offset: page - 1 // temp, move in multiples of X in the future
+        })
+
+        const uploads = {}
+        for (const upload of res.data) {
+          uploads[upload.url] = upload
+        }
+
+        this.uploads = uploads
+      } catch (error) {
+        console.error(error)
+      }
     }
   },
   data () {
@@ -62,20 +82,7 @@ export default {
     }
   },
   async mounted () {
-    try {
-      const res = await indexFiles({
-        limit: 100
-      })
-
-      const uploads = {}
-      for (const upload of res.data) {
-        uploads[upload.url] = upload
-      }
-
-      this.uploads = uploads
-    } catch (error) {
-      console.error(error)
-    }
+    await this.getUploads(1)
   }
 }
 </script>
