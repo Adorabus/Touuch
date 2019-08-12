@@ -39,6 +39,33 @@ export default {
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
 /* TODO: Maybe move global stuff into separate file. */
 html, body {
   margin: 0;
@@ -78,6 +105,10 @@ html, body {
     justify-content: center;
     height: 100%;
 
+    &:first-child {
+      padding-left: 30px;
+    }
+
     img {
       display: inline-block;
     }
@@ -100,15 +131,23 @@ hr {
 }
 
 button {
+  height: 22px;
   color: $link-color;
   background: #181818;
   border: 1px solid #222;
-  padding: 8px;
+  padding: 5px;
   margin: 5px;
   font-size: 10pt;
   font-weight: bold;
   outline: none;
   box-shadow: $shadow-style;
+  border-radius: 3px;
+
+  &:disabled {
+    color: grey;
+    transform: translate(0, 1px);
+    box-shadow: $shadow-style-low;
+  }
 
   &:active {
     transform: translate(0, 1px);
@@ -117,12 +156,14 @@ button {
 }
 
 input[type=text], input[type=password], input[type=number] {
+  height: 22px;
   color: #fff;
   background: #181818;
   border: 1px solid #222;
   padding: 5px;
   margin: 5px;
   font-size: 12pt;
+  border-radius: 3px;
 
   &:focus {
     outline: 1px solid rgb(255, 33, 85);

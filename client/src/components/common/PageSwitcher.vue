@@ -1,11 +1,11 @@
 <template lang="pug">
   .pages
-    button(@click='previous') <
+    button.page-button.material-icons(@click='previous', :disabled='page === 1') arrow_back
     input.page-input(
       type='number', v-model.number='page', step='1',
       @wheel='scroll', @keypress='noDot', @paste.prevent
     )
-    button(@click='next') >
+    button.page-button.material-icons(@click='next', :disabled='page === total') arrow_forward
 </template>
 
 <script>
@@ -58,6 +58,23 @@ export default {
   width: 30px;
   text-align: center;
   color: #aaa;
+  border: none;
+}
+
+.page-button {
+  @include select(none);
+
+  width: 40px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.2);
+  line-height: 0;
+  vertical-align: middle;
+  box-shadow: none;
+  border: none;
+
+  &:disabled {
+    transform: none;
+  }
 }
 
 input::-webkit-outer-spin-button,
