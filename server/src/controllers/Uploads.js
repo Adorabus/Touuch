@@ -106,6 +106,7 @@ function createFile (file) {
 
 module.exports = {
   async index (req, res) {
+    // TODO: move the default filesPerPage into a config
     const limit = parseInt(req.query.limit) || 25
     const page = parseInt(req.query.page) || 1
     const offset = (page - 1) * limit
@@ -137,7 +138,12 @@ module.exports = {
         urls[i].isText = !!urls[i].isText
       }
 
-      res.send(urls)
+      const totalPages = await req.user.getTotalFilePages(limit)
+
+      res.send({
+        uploads: urls,
+        totalPages
+      })
     } catch (error) {
       console.error(error)
       res.status(500).send({

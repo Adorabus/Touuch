@@ -81,6 +81,12 @@ module.exports = (sequelize, DataTypes) => {
     })
   }
 
+  // TODO: move the default filesPerPage into a config
+  User.prototype.getTotalFilePages = async function (filesPerPage = 25) {
+    const totalFiles = await this.getTotalFiles()
+    return Math.ceil(totalFiles / filesPerPage)
+  }
+
   User.prototype.getTotalBytes = async function () {
     const result = await this.sequelize.query(`
       SELECT SUM(files.size)
