@@ -13,7 +13,7 @@
         @select='fileSelected', @deselect='fileDeselected',
         :selectionMode='numSelected > 0'
       )
-    page-switcher(:total='30', @change='pageChanged')
+    page-switcher(:total='totalPages', @change='pageChanged')
 </template>
 
 <script>
@@ -60,12 +60,14 @@ export default {
     async getUploads (page) {
       try {
         const res = await indexFiles({
-          limit: 100,
-          offset: page - 1 // temp, move in multiples of X in the future
+          limit: 25,
+          page
         })
 
+        this.totalPages = res.data.totalPages
+
         const uploads = {}
-        for (const upload of res.data) {
+        for (const upload of res.data.uploads) {
           uploads[upload.url] = upload
         }
 
@@ -78,7 +80,8 @@ export default {
   data () {
     return {
       uploads: {},
-      numSelected: 0
+      numSelected: 0,
+      totalPages: 0
     }
   },
   async mounted () {
