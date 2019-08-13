@@ -11,7 +11,9 @@ module.exports = {
   index (req, res, next) {
     verifyInput(req, res, next, {
       limit: schemas.fileLimit,
-      offset: schemas.fileOffset
+      page: schemas.page
+    }, {
+      target: req.query
     })
   },
   file (req, res, next) {

@@ -9,7 +9,7 @@ const errorMessages = {
   originalname: 'Invalid file name.',
   hash: 'Invalid hash.',
   fileLimit: 'Invalid file display limit. (positive integers only)',
-  fileOffset: 'Invalid file display offset. (positive integers only)',
+  page: 'Invalid file page. (positive integers only)',
   default: 'Bad input.'
 }
 
@@ -19,8 +19,8 @@ const schemas = {
   twoFactorToken: Joi.string().allow(''),
   filename: Joi.string().regex(/^[\w,\s-.]{1,255}$/),
   hash: Joi.string().hex(),
-  fileLimit: Joi.number().min(1).max(500).integer(),
-  fileOffset: Joi.number().positive().integer()
+  fileLimit: Joi.number().positive().integer().max(500),
+  page: Joi.number().positive().integer()
 }
 
 function verifyInput (req, res, next, schema, options = {}) {
@@ -47,6 +47,7 @@ function verifyInput (req, res, next, schema, options = {}) {
       return true
     }
   } catch (error) {
+    console.error(error)
     res.status(500).send({
       error: 'Input validation error.'
     })

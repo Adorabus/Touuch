@@ -106,6 +106,10 @@ function createFile (file) {
 
 module.exports = {
   async index (req, res) {
+    const limit = parseInt(req.query.limit) || 25
+    const page = parseInt(req.query.page) || 1
+    const offset = (page - 1) * limit
+
     try {
       const urls = await sequelize.query(`
         SELECT urls.filename, urls.url, urls.createdAt, files.isAnimated, files.isText
@@ -121,8 +125,8 @@ module.exports = {
         mapToModel: true,
         replacements: {
           ownerId: req.user.id,
-          limit: parseInt(req.query.limit) || 25,
-          offset: parseInt(req.query.offset) || 0,
+          limit,
+          offset,
           model: Url
         }
       })
