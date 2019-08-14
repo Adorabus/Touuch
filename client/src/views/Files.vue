@@ -20,6 +20,7 @@
 import File from '@/components/File'
 import PageSwitcher from '@/components/common/PageSwitcher'
 import {indexFiles, removeFiles} from '@/services/FilesService.js'
+import debounce from 'lodash.debounce'
 
 export default {
   components: {
@@ -57,10 +58,10 @@ export default {
         console.error(error)
       }
     },
-    async getUploads (page) {
+    getUploads: debounce(async function (page) {
       try {
         const res = await indexFiles({
-          limit: 25,
+          limit: 2,
           page
         })
 
@@ -75,7 +76,7 @@ export default {
       } catch (error) {
         console.error(error)
       }
-    }
+    }, 250)
   },
   data () {
     return {
