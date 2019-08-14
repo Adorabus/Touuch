@@ -29,7 +29,12 @@ export default {
   },
   methods: {
     async pageChanged (newPage) {
-      await this.getUploads(newPage)
+      if (newPage !== this.lastPage) {
+        this.pendingPageChange = true
+        await this.getUploads(newPage)
+      }
+
+      this.lastPage = newPage
     },
     fileSelected (url) {
       if (!this.uploads[url].selected) this.numSelected++
@@ -61,7 +66,7 @@ export default {
     getUploads: debounce(async function (page) {
       try {
         const res = await indexFiles({
-          limit: 2,
+          limit: 25,
           page
         })
 
@@ -76,13 +81,17 @@ export default {
       } catch (error) {
         console.error(error)
       }
+
+      this.pendingPageChange = false
     }, 250)
   },
   data () {
     return {
       uploads: {},
       numSelected: 0,
-      totalPages: 0
+      totalPages: 0,
+      pendingPageChange: false,
+      lastPage: 1
     }
   },
   async mounted () {
