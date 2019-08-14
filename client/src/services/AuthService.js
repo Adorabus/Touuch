@@ -12,8 +12,8 @@ export function resetUserkey () {
   return Api().post('auth/userkey')
 }
 
-export function checkAuth (updatedAt) {
-  return Api().get('auth', {params: {updatedAt}})
+export function checkAuth () {
+  return Api().get('auth')
 }
 
 export function set2FA (enabled) {

@@ -46,7 +46,7 @@ router.afterEach(
   async (to, from) => {
     if (!to.meta.skipAuthCheck && store.state.isLoggedIn) {
       try {
-        const response = await checkAuth(store.state.user.updatedAt)
+        const response = await checkAuth()
         if (response.data.user) {
           store.dispatch('setUser', response.data.user)
         }

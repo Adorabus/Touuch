@@ -6,6 +6,7 @@ const config = require('../config')
 const uuidv4 = require('uuid/v4')
 const speakeasy = require('speakeasy')
 const qrcode = require('qrcode')
+const jwtDecode = require('jwt-decode')
 
 function jwtSignUser (user) {
   return jwt.sign(user, config.auth.jwtSecret, {
@@ -131,7 +132,8 @@ module.exports = {
   },
   checkAuth (req, res) {
     // check if client-side user is out of date
-    if (req.query.updatedAt !== req.user.updatedAt.toISOString()) {
+    const clientUserData = jwtDecode(req.headers.authorization.slice(7))
+    if (clientUserData !== req.user.updatedAt.toISOString()) {
       // send the up-to-date user
       res.send({
         user: req.user.loggedIn()
