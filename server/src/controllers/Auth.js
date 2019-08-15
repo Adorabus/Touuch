@@ -133,7 +133,7 @@ module.exports = {
   checkAuth (req, res) {
     // check if client-side user is out of date
     const clientUserData = jwtDecode(req.headers.authorization.slice(7))
-    if (clientUserData !== req.user.updatedAt.toISOString()) {
+    if (clientUserData.updatedAt !== req.user.updatedAt.toISOString()) {
       // send the up-to-date user
       res.send({
         user: req.user.loggedIn()
