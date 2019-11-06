@@ -2,7 +2,7 @@ const path = require('path')
 const config = require('../config')
 const {spawn} = require('child_process')
 const ffprobe = require('ffprobe-static')
-const isBinaryFile = require('isbinaryfile')
+const {isBinaryFile} = require('isbinaryfile')
 const fs = require('mz/fs')
 const {createPreview, countFrames} = require('../util/preview')
 
@@ -10,18 +10,6 @@ const resourcesDirectory = path.join(__dirname, '../../resources')
 const textPreviewBackground = path.join(resourcesDirectory, 'images', 'text-bg.png')
 const textFontPath = path.join(resourcesDirectory, 'fonts', 'Inconsolata-Regular.ttf')
 const ffFontFile = path.relative(process.cwd(), textFontPath).replace(/\\/g, '/')
-
-function getIsText (filePath) {
-  return new Promise((resolve, reject) => {
-    isBinaryFile(filePath, (error, binary) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(!binary)
-      }
-    })
-  })
-}
 
 function getDimensions (filePath) {
   return new Promise((resolve, reject) => {
@@ -84,7 +72,7 @@ module.exports = (sequelize, DataTypes) => {
     hooks: {
       async beforeCreate (fileModel) {
         const filePath = fileModel.getPath()
-        fileModel.isText = await getIsText(filePath)
+        fileModel.isText = !(await isBinaryFile(filePath))
 
         if (!fileModel.isText) {
           // if it's a proper media file, gather some info
@@ -97,7 +85,11 @@ module.exports = (sequelize, DataTypes) => {
             // so far so good, is it animated?
             const frameCount = await countFrames(filePath)
             fileModel.isAnimated = frameCount && frameCount > 1
-          } catch (error) { }
+          } catch (error) { 
+            if (process.env.NODE_ENV === 'development') {
+              console.error(error)
+            }
+          }
         }
 
         // generate a preview
