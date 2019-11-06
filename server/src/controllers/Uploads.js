@@ -165,7 +165,22 @@ module.exports = {
       if (fileModel) {
         await fs.unlink(req.file.path)
       } else {
-        fileModel = await createFile(req.file)
+        // it wasn't found, check if there is a soft-deleted row
+        fileModel = await File.findOne({
+          where: {
+            hash: req.file.hash,
+          },
+          paranoid: false
+        })
+
+        if (fileModel) {
+          // a soft-deleted row was found, un-delete it
+          fileModel.setDataValue('deletedAt', null)
+          await fileModel.save({paranoid: false})
+        } else {
+          // if we still didn't find one, create it
+          fileModel = await createFile(req.file)
+        }
       }
 
       const urlModel = await createUrl(fileModel, req.user, req.file.originalname)
