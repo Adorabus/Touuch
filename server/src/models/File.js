@@ -47,24 +47,24 @@ function getDimensions (filePath) {
   })
 }
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const File = sequelize.define('File', {
     hash: {
-      type: DataTypes.STRING(128),
+      type: Sequelize.STRING(128),
       allowNull: false,
       unique: true
     },
-    size: DataTypes.BIGINT.UNSIGNED,
-    width: DataTypes.INTEGER.UNSIGNED,
-    height: DataTypes.INTEGER.UNSIGNED,
-    isAnimated: DataTypes.BOOLEAN,
+    size: Sequelize.BIGINT.UNSIGNED,
+    width: Sequelize.INTEGER.UNSIGNED,
+    height: Sequelize.INTEGER.UNSIGNED,
+    isAnimated: Sequelize.BOOLEAN,
     isText: {
-      type: DataTypes.BOOLEAN,
+      type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false
     },
     noPreview: {
-      type: DataTypes.BOOLEAN,
+      type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false
     }

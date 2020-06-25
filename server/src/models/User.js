@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs')
 const pick = require('lodash/pick')
 const omit = require('lodash/omit')
-const uuidv4 = require('uuid/v4')
+const {v4: uuidv4} = require('uuid')
 const speakeasy = require('speakeasy')
 
 function beforeSave (user, options) {
@@ -19,22 +19,22 @@ function beforeSave (user, options) {
     })
 }
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const User = sequelize.define('User', {
     username: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       unique: true
     },
-    password: DataTypes.STRING,
-    userkey: DataTypes.STRING,
-    twoFactorSecret: DataTypes.STRING,
+    password: Sequelize.STRING,
+    userkey: Sequelize.STRING,
+    twoFactorSecret: Sequelize.STRING,
     admin: {
-      type: DataTypes.BOOLEAN,
+      type: Sequelize.BOOLEAN,
       allowNull: false,
       defaultValue: false
     },
     disabledAt: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       defaultValue: null
     }
   },

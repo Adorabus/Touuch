@@ -1,9 +1,9 @@
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const LoginAttempt = sequelize.define('LoginAttempt', {
-    username: DataTypes.STRING,
-    ipAddress: DataTypes.STRING,
-    country: DataTypes.STRING,
-    success: DataTypes.BOOLEAN
+    username: Sequelize.STRING,
+    ipAddress: Sequelize.STRING,
+    country: Sequelize.STRING,
+    success: Sequelize.BOOLEAN
   })
 
   return LoginAttempt

@@ -2,10 +2,10 @@ const mime = require('mime-types')
 const path = require('path')
 const config = require('../config')
 
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize) => {
   const Url = sequelize.define('Url', {
     filename: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       unique: false
     },
